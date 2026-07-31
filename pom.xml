@@ -10,12 +10,12 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>io.github.hiwepy</groupId>
+	<groupId>io.github.easy4j</groupId>
 	<artifactId>security-biz-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Spring Security Biz</description>
 	<version>2.7.x.20260527-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
-	<url>https://github.com/hiwepy/${project.artifactId}</url>
+	<url>https://github.com/easy-4-java/${project.artifactId}</url>
 	<packaging>jar</packaging>
 
 	<licenses>
@@ -26,9 +26,9 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</connection>
-		<developerConnection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</developerConnection>
-		<url>https:github.com/hiwepy/${project.artifactId}</url>
+		<connection>scm:git:https:github.com/easy-4-java/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:https:github.com/easy-4-java/${project.artifactId}.git</developerConnection>
+		<url>https:github.com/easy-4-java/${project.artifactId}</url>
 		<tag>${project.artifactId}</tag>
 	</scm>
 
@@ -356,9 +356,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<spring-security-extension.version>1.0.x-SNAPSHOT</spring-security-extension.version>
 		<fastjson2.version>2.0.52</fastjson2.version>
-		<jwt-issuer.version>1.1.8.RELEASE</jwt-issuer.version>
-		<spring-biz.version>1.1.4.RELEASE</spring-biz.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<commons-io.version>2.16.1</commons-io.version>
 		<maven.version>3.0</maven.version>
@@ -391,16 +391,11 @@
 				<artifactId>fastjson2</artifactId>
 				<version>${fastjson2.version}</version>
 			</dependency>
+			<!-- https://github.com/easy-4-java/spring-security-extension -->
 			<dependency>
-				<groupId>io.github.hiwepy</groupId>
-				<artifactId>jwt-issuer-api</artifactId>
-				<version>${jwt-issuer.version}</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/io.github.hiwepy/spring-biz -->
-			<dependency>
-			    <groupId>io.github.hiwepy</groupId>
-			    <artifactId>spring-biz</artifactId>
-			    <version>${spring-biz.version}</version>
+				<groupId>io.github.easy4j</groupId>
+				<artifactId>spring-security-extension</artifactId>
+				<version>${spring-security-extension.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -477,12 +472,8 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>io.github.hiwepy</groupId>
-		    <artifactId>spring-biz</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.github.hiwepy</groupId>
-			<artifactId>jwt-issuer-api</artifactId>
+			<groupId>io.github.easy4j</groupId>
+			<artifactId>spring-security-extension</artifactId>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
