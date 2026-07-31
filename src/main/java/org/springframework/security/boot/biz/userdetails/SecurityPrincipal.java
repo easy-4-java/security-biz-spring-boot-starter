@@ -1,7 +1,7 @@
 package org.springframework.security.boot.biz.userdetails;
 
-import io.github.hiwepy.jwt.JwtPayload;
-import io.github.hiwepy.jwt.JwtPayload.RolePair;
+import io.github.easy4j.jwt.JwtPayload;
+import io.github.easy4j.jwt.JwtPayload.RolePair;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
