@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * Reactive Subject Utils
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
  */
 public class ReactiveSubjectUtils {
 

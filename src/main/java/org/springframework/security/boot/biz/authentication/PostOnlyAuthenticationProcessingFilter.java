@@ -20,7 +20,7 @@ import java.io.IOException;
 
 /**
  * PostOnly Authentication Processing Filter
- * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author 		： <a href="https://github.com/easy-4-java">hiwepy</a>
  */
 public abstract class PostOnlyAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
 

@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author <a href="https://github.com/easy-4-java">hiwepy</a>
  */
 @SuppressWarnings("serial")
 public class SecurityPrincipal extends User implements Cloneable {

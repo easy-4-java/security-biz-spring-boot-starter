@@ -29,7 +29,7 @@ import java.io.IOException;
 /**
  * 
  * 账号、密码、验证码认证过滤器
- * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author 		： <a href="https://github.com/easy-4-java">hiwepy</a>
  */
 public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 

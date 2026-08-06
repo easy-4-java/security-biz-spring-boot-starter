@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * TODO
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
  */
 public interface MatchedServerAuthenticationFailureHandler {
 
@@ -35,7 +35,7 @@ public interface MatchedServerAuthenticationFailureHandler {
 	
 	/**
 	 * Whether it is supported
-	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
 	 * @param e  the authentication exception
 	 * @return true or false
 	 */

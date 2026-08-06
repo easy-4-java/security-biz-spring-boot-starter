@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 
 /**
  *  基础对象初始化
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
  */
 @Configuration
 @AutoConfigureBefore(SecurityAutoConfiguration.class)

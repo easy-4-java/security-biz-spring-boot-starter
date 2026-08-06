@@ -3,7 +3,7 @@ package org.springframework.security.boot.biz.exception;
 /**
  * Enumeration of response code.
  * 
- * @author ： <a href="https://github.com/hiwepy">wandl</a>
+ * @author ： <a href="https://github.com/easy-4-java">wandl</a>
  */
 public enum AuthResponseCode {
 

@@ -2,7 +2,7 @@ package org.springframework.security.boot.biz.exception;
 
 /**
  * Authentication Token Expired Exception
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
  */
 @SuppressWarnings("serial")
 public class AuthenticationTokenExpiredException extends AuthenticationExceptionAdapter {

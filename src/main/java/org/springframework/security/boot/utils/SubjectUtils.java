@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Subject Utils
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
  */
 @SuppressWarnings("unchecked")
 public class SubjectUtils {
