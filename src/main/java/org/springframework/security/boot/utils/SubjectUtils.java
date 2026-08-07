@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.apache.commons.collections4.MapUtils;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -227,8 +226,8 @@ public class SubjectUtils {
 	/**
 	 * 登陆成功后重新生成session【基于安全考虑】
 	 * @param request {@link HttpServletRequest} instance
-	 * @param oldSession Old {@link Session} instance
-	 * @return {@link Session} instance
+	 * @param oldSession Old {@link HttpSession} instance
+	 * @return {@link HttpSession} instance
 	 */
 	public static HttpSession copySession(HttpServletRequest request, HttpSession oldSession) {
 		Map<String, Object> attributes = new LinkedHashMap<String, Object>();

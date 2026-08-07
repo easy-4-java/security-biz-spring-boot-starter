@@ -38,7 +38,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -146,15 +147,15 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 
 				HeaderHpkpProperties hpkp = properties.getHpkp();
 				if (Objects.nonNull(hpkp) && hpkp.isEnabled()) {
-					headers.httpPublicKeyPinning()
+					headers.httpPublicKeyPinning(config -> config
 							.includeSubDomains(hpkp.isIncludeSubDomains())
 							.maxAgeInSeconds(hpkp.getMaxAgeInSeconds())
 							.reportOnly(hpkp.isReportOnly())
 							.reportUri(hpkp.getReportUri())
 							.withPins(hpkp.getPins())
-							.addSha256Pins(hpkp.getSha256Pins());
+							.addSha256Pins(hpkp.getSha256Pins()));
 				} else {
-					headers.httpPublicKeyPinning().disable();
+					headers.httpPublicKeyPinning(config -> config.disable());
 				}
 
 				HeaderContentSecurityPolicyProperties contentSecurityPolicy = properties.getContentSecurityPolicy();
@@ -235,7 +236,7 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 		/**
 		 * 批量设置参数
 		 */
-		PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+		PropertyMapper map = PropertyMapper.get();
 
 		map.from(cors.isAlwaysUseFullPath()).to(configurationSource::setAlwaysUseFullPath);
 		map.from(cors.getCorsConfigurations()).to(configurationSource::setCorsConfigurations);
@@ -264,16 +265,14 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 				if (ArrayUtils.isNotEmpty(roles)) {
 					if (roles.length > 1) {
 						// 如果用户具备给定角色中的某一个的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
+						http.authorizeHttpRequests(authorize -> authorize
 								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyRole(roles).and();
+								.hasAnyRole(roles));
 					} else {
 						// 如果用户具备给定角色的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
+						http.authorizeHttpRequests(authorize -> authorize
 								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasRole(roles[0]).and();
+								.hasRole(roles[0]));
 					}
 				}
 			}
@@ -287,16 +286,14 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 				if (ArrayUtils.isNotEmpty(perms)) {
 					if (perms.length > 1) {
 						// 如果用户具备给定全权限的某一个的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
+						http.authorizeHttpRequests(authorize -> authorize
 								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyAuthority(perms).and();
+								.hasAnyAuthority(perms));
 					} else {
 						// 如果用户具备给定权限的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
+						http.authorizeHttpRequests(authorize -> authorize
 								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAuthority(perms[0]).and();
+								.hasAuthority(perms[0]));
 					}
 				}
 			}
@@ -309,16 +306,18 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 				String ipaddr = ipMatcher.group(1);
 				if (StringUtils.hasText(ipaddr)) {
 					// 如果请求来自给定IP地址的话，就允许访问
-					http = http.authorizeRequests()
-							.expressionHandler(customWebSecurityExpressionHandler())
+					WebExpressionAuthorizationManager authorizationManager =
+							new WebExpressionAuthorizationManager("hasIpAddress('" + ipaddr + "')");
+					authorizationManager.setExpressionHandler(customWebSecurityExpressionHandler());
+					http.authorizeHttpRequests(authorize -> authorize
 							.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-							.hasIpAddress(ipaddr).and();
+							.access(authorizationManager));
 				}
 			}
 		}
 	}
 
-	public SecurityExpressionHandler<FilterInvocation> customWebSecurityExpressionHandler() {
+	public SecurityExpressionHandler<RequestAuthorizationContext> customWebSecurityExpressionHandler() {
 		return new CustomWebSecurityExpressionHandler();
 	}
 
