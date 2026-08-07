@@ -53,8 +53,8 @@ public class AbstractAuthenticationToken extends org.springframework.security.au
 	 */
 	private double latitude;
 
-    public AbstractAuthenticationToken(Object principal) {
-        super(null);
+	    public AbstractAuthenticationToken(Object principal) {
+	        super((Collection<? extends GrantedAuthority>) null);
         this.principal = principal;
         setAuthenticated(false);
     }
