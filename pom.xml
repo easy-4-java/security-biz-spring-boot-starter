@@ -13,7 +13,7 @@
     <groupId>io.github.easy4j</groupId>
     <artifactId>security-biz-spring-boot-starter</artifactId>
     <description>Spring Boot Starter For Spring Security Biz</description>
-    <version>2.7.x.20260527-SNAPSHOT</version>
+    <version>2.7.x.20260630-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/easy-4-java/${project.artifactId}</url>
     <packaging>jar</packaging>
@@ -406,7 +406,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring-security-extension.version>1.0.x-SNAPSHOT</spring-security-extension.version>
+        <spring-security-extension.version>1.0.x.20260630-SNAPSHOT</spring-security-extension.version>
         <fastjson2.version>2.0.52</fastjson2.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-io.version>2.16.1</commons-io.version>
