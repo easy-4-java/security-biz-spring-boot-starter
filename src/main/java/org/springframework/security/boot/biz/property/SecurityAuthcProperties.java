@@ -114,6 +114,9 @@ public class SecurityAuthcProperties {
 	
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
+
+	@NestedConfigurationProperty
+	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
 	
 	/**
 	 * If this property is set, the current request will be checked for this a parameter
