@@ -15,6 +15,7 @@ import org.springframework.security.boot.biz.authentication.nested.MatchedAuthen
 import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.utils.WebSecurityUtils;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -110,6 +111,10 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityCustomi
 
 	protected SessionInformationExpiredStrategy sessionInformationExpiredStrategy() {
 		return null;
+	}
+
+	public void configure(WebSecurity web) throws Exception {
+		customize(web);
 	}
 
 }
