@@ -12,7 +12,7 @@
     <groupId>io.github.easy4j</groupId>
     <artifactId>security-biz-spring-boot-starter</artifactId>
     <description>Spring Boot Starter For Spring Security Biz</description>
-    <version>3.0.x.20260527-SNAPSHOT</version>
+    <version>3.0.x.20260630-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/easy-4-java/${project.artifactId}</url>
     <packaging>jar</packaging>
@@ -434,8 +434,8 @@
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         
         <fastjson2.version>2.0.53</fastjson2.version>
-        <jwt-issuer.version>1.1.4.1.RELEASE</jwt-issuer.version>
-        <spring-biz.version>3.3.x.20241003.RELEASE</spring-biz.version>
+        <jwt-issuer.version>2.0.x.20260630-SNAPSHOT</jwt-issuer.version>
+        <spring-biz.version>2.0.x.20260630-SNAPSHOT</spring-biz.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-io.version>2.16.1</commons-io.version>
         <swagger.version>1.6.2</swagger.version>
