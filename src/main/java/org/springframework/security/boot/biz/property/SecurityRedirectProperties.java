@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,11 +19,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Security Redirect Properties
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Getter
 @Setter
@@ -31,8 +33,8 @@ import java.util.*;
 public class SecurityRedirectProperties {
 
 	/**
-	 * If <tt>true</tt>, causes any redirection URLs to be calculated minus the protocol
-	 * and context path (defaults to <tt>false</tt>).
+	 * If &lt;tt&gt;true&lt;/tt&gt;, causes any redirection URLs to be calculated minus the protocol
+	 * and context path (defaults to &lt;tt&gt;false&lt;/tt&gt;).
 	 */
 	private boolean contextRelative;
 

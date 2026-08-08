@@ -3,6 +3,10 @@ package org.springframework.security.boot.biz.authentication;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -17,19 +21,16 @@ import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.Assert;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
  * 
  * 账号、密码、验证码认证过滤器
- * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
@@ -60,11 +61,11 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 	// ===================================================================================================
 	
 	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper) {
-		super(new AntPathRequestMatcher("/login"));
+		super(PathPatternRequestMatcher.pathPattern("/login"));
 		this.objectMapper = objectMapper;
 	}
-	
-	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper, AntPathRequestMatcher requestMatcher) {
+
+	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper, RequestMatcher requestMatcher) {
 		super(requestMatcher);
 		this.objectMapper = objectMapper;
 	}
@@ -253,10 +254,10 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 	 * Defines whether only HTTP POST requests will be allowed by this filter. If set to
 	 * true, and an authentication request is received which is not a POST request, an
 	 * exception will be raised immediately and authentication will not be attempted. The
-	 * <tt>unsuccessfulAuthentication()</tt> method will be called as if handling a failed
+	 * &lt;tt&gt;unsuccessfulAuthentication()&lt;/tt&gt; method will be called as if handling a failed
 	 * authentication.
 	 * <p>
-	 * Defaults to <tt>true</tt> but may be overridden by subclasses.
+	 * Defaults to &lt;tt&gt;true&lt;/tt&gt; but may be overridden by subclasses.
 	 * @param postOnly if postOnly
 	 */
 	public void setPostOnly(boolean postOnly) {

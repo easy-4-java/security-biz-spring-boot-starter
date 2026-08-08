@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -33,15 +33,14 @@ import org.springframework.security.boot.biz.property.SecuritySessionMgtProperti
 import org.springframework.security.boot.biz.property.header.*;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebSecurityUtils;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
-import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -52,21 +51,47 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * WebSecurityCustomizer Adapter
- * @see WebSecurityCustomizer
- * @author ： <a href="https://github.com/hiwepy">wandl</a>
- */
-public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCustomizer, ApplicationContextAware {
 
+/**
+ * Base adapter for building Spring Security {@link WebSecurityCustomizer}
+ * instances used by the security-biz starter. Provides reusable hooks for
+ * configuring the authentication manager, security headers, CSRF, CORS and the
+ * rule-based authorization derived from the Shiro-style filter-chain
+ * definition map.
+ * <p>
+ * Subclasses extend this adapter (see
+ * {@link WebSecurityBizConfigurerAdapter}) to plug in authentication-specific
+ * wiring while inheriting the common configuration helpers.</p>
+ *
+ * @see WebSecurityCustomizer
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
+public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomizer, ApplicationContextAware {
+
+	/** Pattern matching {@code roles[...]} chain names, e.g. {@code roles[admin,user]}. */
 	protected Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
+	/** Pattern matching {@code perms[...]} chain names, e.g. {@code perms[user:read]}. */
 	protected Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
+	/** Pattern matching {@code ipaddr[...]} chain names, e.g. {@code ipaddr[192.168.1.0/24]}. */
 	protected Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
+	/** Bound business-level security properties (filter-chain definition map). */
 	protected final SecurityBizProperties bizProperties;
+	/** Bound session-management properties. */
 	protected final SecuritySessionMgtProperties sessionMgtProperties;
+	/** Authentication providers registered with this adapter. */
 	protected final List<AuthenticationProvider> authenticationProviders;
+	/** The application context, injected via {@link ApplicationContextAware}. */
 	protected ApplicationContext applicationContext;
 
+	/**
+	 * Binds the business properties, session-management properties and
+	 * authentication providers used by this adapter.
+	 *
+	 * @param bizProperties          business-level security properties
+	 * @param sessionMgtProperties   session-management properties
+	 * @param authenticationProviders authentication providers to register
+	 */
 	public WebSecurityCustomizerAdapter(SecurityBizProperties bizProperties,
 										SecuritySessionMgtProperties sessionMgtProperties,
 										List<AuthenticationProvider> authenticationProviders) {
@@ -75,13 +100,28 @@ public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCusto
 		this.authenticationProviders = authenticationProviders;
 	}
 
+	/**
+	 * Builds the {@link AuthenticationManager} from the registered providers.
+	 * <p>Credential erasure is disabled so remember-me services can still
+	 * access the credentials after authentication.</p>
+	 *
+	 * @return a {@link ProviderManager} aggregating the authentication providers
+	 * @throws Exception if the manager cannot be built
+	 */
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		ProviderManager authenticationManager = new ProviderManager(authenticationProviders);
-		// 不擦除认证密码，擦除会导致TokenBasedRememberMeServices因为找不到Credentials再调用UserDetailsService而抛出UsernameNotFoundException
+		// Do not erase credentials: erasing would force TokenBasedRememberMeServices to
+		// re-invoke UserDetailsService and throw UsernameNotFoundException.
 		authenticationManager.setEraseCredentialsAfterAuthentication(false);
 		return authenticationManager;
 	}
-	
+
+	/**
+	 * Registers every authentication provider with the given builder.
+	 *
+	 * @param auth the {@link AuthenticationManagerBuilder} to configure
+	 * @throws Exception if a provider cannot be registered
+	 */
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		for (AuthenticationProvider authenticationProvider : authenticationProviders) {
 			auth.authenticationProvider(authenticationProvider);
@@ -89,121 +129,141 @@ public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCusto
 	}
 
 	/**
-	 * Headers 配置
-	 * 
-	 * @author ： <a href="https://github.com/hiwepy">wandl</a>
-	 * @param http  the HttpSecurity
-	 * @param properties the Security Headers Properties
-	 * @throws Exception the Exception
+	 * Configures the security response headers (content-type options, XSS
+	 * protection, cache control, HSTS, frame options, HPKP, CSP, referrer
+	 * policy, feature/permissions policy) according to the bound properties.
+	 *
+	 * @param http        the HttpSecurity to configure
+	 * @param properties  the security headers properties
+	 * @throws Exception if configuration fails
 	 */
 	@SuppressWarnings("rawtypes")
 	protected void configure(HttpSecurity http, SecurityHeadersProperties properties) throws Exception {
 		if (properties.isEnabled()) {
 
-			HeadersConfigurer<HttpSecurity> headers = http.headers();
+			http.headers((headers) -> {
 
-			HeaderContentTypeOptionsProperties contentTypeOptions = properties.getContentTypeOptions();
-			if (contentTypeOptions.isEnabled()) {
-				headers.contentTypeOptions();
-			} else {
-				headers.contentTypeOptions().disable();
-			}
-
-			HeaderXssProtectionProperties xssProtection = properties.getXssProtection();
-			if (xssProtection.isEnabled()) {
-				headers.xssProtection().xssProtectionEnabled(xssProtection.isEnabled()).block(xssProtection.isBlock());
-			} else {
-				headers.xssProtection().disable();
-			}
-
-			HeaderCacheControlProperties cacheControl = properties.getCacheControl();
-			if (cacheControl.isEnabled()) {
-				headers.cacheControl();
-			} else {
-				headers.cacheControl().disable();
-			}
-
-			HeaderHstsProperties hsts = properties.getHsts();
-			if (hsts.isEnabled()) {
-				 headers.httpStrictTransportSecurity()
-						.includeSubDomains(hsts.isIncludeSubDomains())
-						.maxAgeInSeconds(hsts.getMaxAgeInSeconds());
-			} else {
-				headers.httpStrictTransportSecurity().disable();
-			}
-
-			HeaderFrameOptionsProperties frameOptions = properties.getFrameOptions();
-			if (frameOptions.isEnabled()) {
-				FrameOptionsConfig config = headers.frameOptions();
-				if (frameOptions.isDeny()) {
-					config.deny();
-				} else if (frameOptions.isSameOrigin()) {
-					config.sameOrigin();
+				HeaderContentTypeOptionsProperties contentTypeOptions = properties.getContentTypeOptions();
+				if (Objects.nonNull(contentTypeOptions) && contentTypeOptions.isEnabled()) {
+					headers.contentTypeOptions(Customizer.withDefaults());
 				}
-			} else {
-				headers.frameOptions().disable();
-			}
 
-			HeaderHpkpProperties hpkp = properties.getHpkp();
-			if (hpkp.isEnabled()) {
-				 headers.httpPublicKeyPinning()
-						.includeSubDomains(hpkp.isIncludeSubDomains())
-						.maxAgeInSeconds(hpkp.getMaxAgeInSeconds())
-						.reportOnly(hpkp.isReportOnly())
-						.reportUri(hpkp.getReportUri())
-						.withPins(hpkp.getPins())
-						.addSha256Pins(hpkp.getSha256Pins());
-			} else {
-				headers.httpPublicKeyPinning().disable();
-			}
-
-			HeaderContentSecurityPolicyProperties contentSecurityPolicy = properties.getContentSecurityPolicy();
-			if (contentSecurityPolicy.isEnabled()) {
-				ContentSecurityPolicyConfig config = headers.contentSecurityPolicy(contentSecurityPolicy.getPolicyDirectives());
-				if (contentSecurityPolicy.isReportOnly()) {
-					config.reportOnly();
+				HeaderXssProtectionProperties xssProtectionProperties = properties.getXssProtection();
+				if (Objects.nonNull(xssProtectionProperties) && xssProtectionProperties.isEnabled()) {
+					headers.xssProtection(xXssConfig -> {
+						if (xssProtectionProperties.isBlock()) {
+							xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK);
+						} else {
+							xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED);
+						}
+					});
+				} else {
+					headers.xssProtection((xXssConfig) -> xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.DISABLED));
 				}
-			}
 
-			HeaderReferrerPolicyProperties referrerPolicy = properties.getReferrerPolicy();
-			if (referrerPolicy.isEnabled()) {
-				headers.referrerPolicy();
-			}
+				HeaderCacheControlProperties cacheControl = properties.getCacheControl();
+				if (Objects.nonNull(cacheControl) && cacheControl.isEnabled()) {
+					headers.cacheControl(cacheControlConfig -> {
+					});
+				}
 
-			HeaderFeaturePolicyProperties featurePolicy = properties.getFeaturePolicy();
-			if (featurePolicy.isEnabled()) {
-				headers.featurePolicy(featurePolicy.getPolicyDirectives());
-			}
+				HeaderHstsProperties hsts = properties.getHsts();
+				if (Objects.nonNull(hsts) && hsts.isEnabled()) {
+					headers.httpStrictTransportSecurity(hstsConfig -> {
+						hstsConfig.includeSubDomains(hsts.isIncludeSubDomains())
+									.maxAgeInSeconds(hsts.getMaxAgeInSeconds());
+					});
+				}
+
+				HeaderFrameOptionsProperties frameOptions = properties.getFrameOptions();
+				if (Objects.nonNull(frameOptions) && frameOptions.isEnabled()) {
+					headers.frameOptions( config -> {
+						if (frameOptions.isDeny()) {
+							config.deny();
+						} else if (frameOptions.isSameOrigin()) {
+							config.sameOrigin();
+						}
+					});
+				}
+
+				HeaderHpkpProperties hpkp = properties.getHpkp();
+				if (Objects.nonNull(hpkp) && hpkp.isEnabled()) {
+					headers.httpPublicKeyPinning(config -> config
+							.includeSubDomains(hpkp.isIncludeSubDomains())
+							.maxAgeInSeconds(hpkp.getMaxAgeInSeconds())
+							.reportOnly(hpkp.isReportOnly())
+							.reportUri(hpkp.getReportUri())
+							.withPins(hpkp.getPins())
+							.addSha256Pins(hpkp.getSha256Pins()));
+				} else {
+					headers.httpPublicKeyPinning(config -> config.disable());
+				}
+
+				HeaderContentSecurityPolicyProperties contentSecurityPolicy = properties.getContentSecurityPolicy();
+				if (Objects.nonNull(contentSecurityPolicy) && contentSecurityPolicy.isEnabled()) {
+					headers.contentSecurityPolicy(config -> {
+						config.policyDirectives(contentSecurityPolicy.getPolicyDirectives());
+						if (contentSecurityPolicy.isReportOnly()) {
+							config.reportOnly();
+						}
+					});
+				}
+
+				HeaderReferrerPolicyProperties referrerPolicy = properties.getReferrerPolicy();
+				if (Objects.nonNull(referrerPolicy) && referrerPolicy.isEnabled()) {
+					headers.referrerPolicy(config -> {
+						config.policy(referrerPolicy.getPolicy());
+					});
+				}
+
+				HeaderFeaturePolicyProperties featurePolicy = properties.getFeaturePolicy();
+				if (Objects.nonNull(featurePolicy) && featurePolicy.isEnabled()) {
+					headers.permissionsPolicy(config -> {
+						config.policy(featurePolicy.getPolicyDirectives());
+					});
+				}
+
+			});
 
 		} else {
-			http.headers().cacheControl().disable()// 禁用缓存
-					.and().cors();
+			http.headers((headers) -> {
+				headers.cacheControl(cacheControl -> cacheControl.disable());
+			});
 		}
 	}
 
 	/**
-	 * CSRF 配置
-	 * 
-	 * @author ： <a href="https://github.com/hiwepy">wandl</a>
-	 * @param http  the HttpSecurity
-	 * @param csrf the Security Headers Csrf Properties
-	 * @throws Exception the Exception
+	 * Configures CSRF protection. When enabled, a token repository is wired and
+	 * the configured request matchers are ignored; when disabled CSRF is
+	 * turned off entirely.
+	 *
+	 * @param http  the HttpSecurity to configure
+	 * @param csrf  the CSRF properties
+	 * @throws Exception if configuration fails
 	 */
 	protected void configure(HttpSecurity http, SecurityHeaderCsrfProperties csrf) throws Exception {
-		// CSRF 配置
+		// CSRF configuration.
 		if (csrf.isEnabled()) {
-			http.csrf()
-				.csrfTokenRepository(WebSecurityUtils.csrfTokenRepository(sessionMgtProperties))
-				.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()));
+			http.csrf(csrfConfigurer -> {
+				csrfConfigurer.csrfTokenRepository(WebSecurityUtils.csrfTokenRepository(sessionMgtProperties))
+						.ignoringRequestMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()));
+			});
 		} else {
-			http.csrf().disable();
+			http.csrf((csrfConfigurer) -> csrfConfigurer.disable());
 		}
 	}
 
+	/**
+	 * Customises the {@link WebSecurity} by ignoring the {@code anon} patterns
+	 * declared in the filter-chain definition map (and all {@code OPTIONS}
+	 * requests), so those requests bypass the security filter chain entirely.
+	 *
+	 * @param web the {@link WebSecurity} to customise
+	 */
 	@Override
 	public void customize(WebSecurity web) {
 
-		// 对过滤链按过滤器名称进行分组
+		// Group the filter chain entries by filter (chain) name.
 		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet()
 				.stream().collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
 
@@ -213,19 +273,24 @@ public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCusto
 			permitMatchers = noneEntries.stream().map(mapper -> mapper.getKey()).collect(Collectors.toList());
 		}
 		web.ignoring()
-				.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
-				.antMatchers(HttpMethod.OPTIONS, "/**");
+				.requestMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
+				.requestMatchers(HttpMethod.OPTIONS, "/**");
 
 	}
 
+	/**
+	 * Builds a {@link UrlBasedCorsConfigurationSource} from the bound CORS
+	 * properties.
+	 *
+	 * @param cors the CORS properties
+	 * @return the configured CORS configuration source
+	 */
 	protected CorsConfigurationSource configurationSource(SecurityHeaderCorsProperties cors) {
 
 		UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();
 
-		/**
-		 * 批量设置参数
-		 */
-		PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+		// Apply all non-null bound properties onto the source.
+		PropertyMapper map = PropertyMapper.get();
 
 		map.from(cors.isAlwaysUseFullPath()).to(configurationSource::setAlwaysUseFullPath);
 		map.from(cors.getCorsConfigurations()).to(configurationSource::setCorsConfigurations);
@@ -235,9 +300,17 @@ public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCusto
 		return configurationSource;
 	}
 
+	/**
+	 * Configures the rule-based authorization for the given {@link HttpSecurity}
+	 * by parsing the Shiro-style chain names from the filter-chain definition
+	 * map: {@code roles[...]}, {@code perms[...]} and {@code ipaddr[...]}.
+	 *
+	 * @param http the HttpSecurity to configure
+	 * @throws Exception if configuration fails
+	 */
 	protected void configure(HttpSecurity http) throws Exception {
 
-		// 对过滤链按过滤器名称进行分组
+		// Group the filter chain entries by filter (chain) name.
 		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet()
 				.stream().collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
 
@@ -248,24 +321,20 @@ public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCusto
 			Matcher rolesMatcher = rolesPattern.matcher(key.toString());
 			if (rolesMatcher.find()) {
 
-				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
+				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(Entry::getKey).collect(Collectors.toList());
 				// 角色
 				String[] roles = StringUtils.split(rolesMatcher.group(1), ",");
 				if (ArrayUtils.isNotEmpty(roles)) {
 					if (roles.length > 1) {
 						// 如果用户具备给定角色中的某一个的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyRole(roles).and();
+						http.authorizeHttpRequests(authorize -> authorize
+								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.hasAnyRole(roles));
 					} else {
 						// 如果用户具备给定角色的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasRole(roles[0]).and();
+						http.authorizeHttpRequests(authorize -> authorize
+								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.hasRole(roles[0]));
 					}
 				}
 			}
@@ -273,24 +342,20 @@ public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCusto
 			Matcher permsMatcher = permsPattern.matcher(key.toString());
 			if (permsMatcher.find()) {
 
-				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
+				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(Entry::getKey).collect(Collectors.toList());
 				// 权限标记
 				String[] perms = StringUtils.split(permsMatcher.group(1), ",");
 				if (ArrayUtils.isNotEmpty(perms)) {
 					if (perms.length > 1) {
 						// 如果用户具备给定全权限的某一个的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyAuthority(perms).and();
+						http.authorizeHttpRequests(authorize -> authorize
+								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.hasAnyAuthority(perms));
 					} else {
 						// 如果用户具备给定权限的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAuthority(perms[0]).and();
+						http.authorizeHttpRequests(authorize -> authorize
+								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.hasAuthority(perms[0]));
 					}
 				}
 			}
@@ -298,43 +363,62 @@ public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCusto
 			Matcher ipMatcher = ipaddrPattern.matcher(key.toString());
 			if (ipMatcher.find()) {
 
-				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
+				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(Entry::getKey).collect(Collectors.toList());
 				// ipaddress
 				String ipaddr = ipMatcher.group(1);
 				if (StringUtils.hasText(ipaddr)) {
 					// 如果请求来自给定IP地址的话，就允许访问
-					http = http.authorizeRequests()
-							.expressionHandler(customWebSecurityExpressionHandler())
-							.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-							.hasIpAddress(ipaddr).and();
+					WebExpressionAuthorizationManager authorizationManager =
+							new WebExpressionAuthorizationManager("hasIpAddress('" + ipaddr + "')");
+					authorizationManager.setExpressionHandler(customWebSecurityExpressionHandler());
+					http.authorizeHttpRequests(authorize -> authorize
+							.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+							.access(authorizationManager));
 				}
 			}
 		}
 	}
 
-	public SecurityExpressionHandler<FilterInvocation> customWebSecurityExpressionHandler() {
+	/**
+	 * @return a {@link CustomWebSecurityExpressionHandler} for SpEL-based access rules.
+	 */
+	public SecurityExpressionHandler<RequestAuthorizationContext> customWebSecurityExpressionHandler() {
 		return new CustomWebSecurityExpressionHandler();
 	}
 
-	protected void configure(HttpSecurity http, SecurityHeaderCorsProperties cors) throws Exception {
-		if (cors.isEnabled()) {
-			http.cors().configurationSource(this.configurationSource(cors));
+	/**
+	 * Configures CORS for the given {@link HttpSecurity} using the bound CORS
+	 * properties; disables CORS entirely when the properties are absent or disabled.
+	 *
+	 * @param http           the HttpSecurity to configure
+	 * @param corsProperties the CORS properties
+	 * @throws Exception if configuration fails
+	 */
+	protected void configure(HttpSecurity http, SecurityHeaderCorsProperties corsProperties) throws Exception {
+		if (Objects.nonNull(corsProperties) && corsProperties.isEnabled()) {
+			http.cors(config -> config.configurationSource(this.configurationSource(corsProperties)));
 		} else {
-			http.cors().disable();
+			http.cors(config -> config.disable());
 		}
 	}
 	
+	/** @return the bound session-management properties. */
 	public SecuritySessionMgtProperties getSessionMgtProperties() {
 		return sessionMgtProperties;
 	}
 
+	/**
+	 * Stores the {@link ApplicationContext} injected by Spring.
+	 *
+	 * @param applicationContext the running application context
+	 * @throws BeansException never thrown by the current implementation
+	 */
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+	/** @return the application context. */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

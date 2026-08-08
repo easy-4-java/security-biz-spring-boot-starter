@@ -29,7 +29,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * 1.securedEnabled: Spring Security’s native annotation
  * 2.jsr250Enabled: standards-based and allow simple role-based constraints
  * 3.prePostEnabled: expression-based
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @EnableGlobalMethodSecurity(jsr250Enabled=true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
