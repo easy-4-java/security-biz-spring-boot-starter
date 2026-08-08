@@ -1,333 +1,202 @@
 /*
  * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  */
 package org.springframework.security.boot;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.boot.biz.CustomWebSecurityExpressionHandler;
-import org.springframework.security.boot.biz.property.SecurityHeaderCorsProperties;
-import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperties;
-import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
+import org.springframework.security.boot.biz.authentication.AuthenticationListener;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
+import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
-import org.springframework.security.boot.biz.property.header.*;
-import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebSecurityUtils;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
-import org.springframework.security.web.FilterInvocation;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.NullRememberMeServices;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * Web Security Biz Configurer Adapter
- * @author ： <a href="https://github.com/hiwepy">wandl</a>
+ * Backward-compatible base class for the legacy feature security starters.
+ * <p>
+ * Extends {@link WebSecurityCustomizerAdapter} with authentication-specific
+ * wiring (entry point, success/failure handlers, logout handler, request cache,
+ * remember-me, session registry and session-authentication strategy) built from
+ * the bound {@link SecurityAuthcProperties}.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
-public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigurerAdapter {
+public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityCustomizerAdapter {
 
-	private Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
-	private Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
-	private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
-	protected final SecurityBizProperties bizProperties;
-	protected final SecuritySessionMgtProperties sessionMgtProperties;
-	private final List<AuthenticationProvider> authenticationProviders;
-	
-	public WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, 
+	/** Bound authentication properties (entry points, handlers, session, etc.). */
+	private final SecurityAuthcProperties authcProperties;
+	/** Optional explicit authentication manager; when {@code null} one is built from providers. */
+	private final AuthenticationManager authenticationManager;
+
+	/**
+	 * Creates an adapter without an explicit authentication manager.
+	 *
+	 * @param bizProperties          business-level security properties
+	 * @param sessionMgtProperties   session-management properties
+	 * @param authenticationProviders authentication providers to register
+	 */
+	protected WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties,
 			SecuritySessionMgtProperties sessionMgtProperties,
 			List<AuthenticationProvider> authenticationProviders) {
-		this.bizProperties = bizProperties;
-		this.sessionMgtProperties = sessionMgtProperties;
-		this.authenticationProviders = authenticationProviders;
+		super(bizProperties, sessionMgtProperties, authenticationProviders);
+		this.authcProperties = null;
+		this.authenticationManager = null;
 	}
 
+	/**
+	 * Creates an adapter with explicit authentication properties and manager.
+	 *
+	 * @param bizProperties          business-level security properties
+	 * @param authcProperties        authentication properties
+	 * @param authenticationProviders authentication providers to register
+	 * @param authenticationManager  explicit authentication manager (may be {@code null})
+	 */
+	protected WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties,
+			SecurityAuthcProperties authcProperties,
+			List<? extends AuthenticationProvider> authenticationProviders,
+			AuthenticationManager authenticationManager) {
+		super(bizProperties, authcProperties.getSessionMgt(), new ArrayList<AuthenticationProvider>(authenticationProviders));
+		this.authcProperties = authcProperties;
+		this.authenticationManager = authenticationManager;
+	}
+
+	/**
+	 * Returns the explicit authentication manager when set, otherwise falls
+	 * back to the provider-based manager built by the superclass.
+	 *
+	 * @return the authentication manager to use
+	 * @throws Exception if the manager cannot be built
+	 */
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
-		ProviderManager authenticationManager = new ProviderManager(authenticationProviders);
-		// 不擦除认证密码，擦除会导致TokenBasedRememberMeServices因为找不到Credentials再调用UserDetailsService而抛出UsernameNotFoundException
-		authenticationManager.setEraseCredentialsAfterAuthentication(false);
-		return authenticationManager;
-	}
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		super.configure(auth);
-		for (AuthenticationProvider authenticationProvider : authenticationProviders) {
-			auth.authenticationProvider(authenticationProvider);
+		if (Objects.nonNull(authenticationManager)) {
+			return authenticationManager;
 		}
+		return super.authenticationManagerBean();
 	}
 
 	/**
-	 * Headers 配置
-	 * 
-	 * @author ： <a href="https://github.com/hiwepy">wandl</a>
-	 * @param http  the HttpSecurity
-	 * @param properties the Security Headers Properties
-	 * @throws Exception the Exception
+	 * Builds the {@link AuthenticationEntryPoint} from the matched entry points.
+	 *
+	 * @param entryPoints the registered matched entry points
+	 * @return a composite authentication entry point
 	 */
-	@SuppressWarnings("rawtypes")
-	protected void configure(HttpSecurity http, SecurityHeadersProperties properties) throws Exception {
-		if (properties.isEnabled()) {
-
-			HeadersConfigurer<HttpSecurity> headers = http.headers();
-
-			HeaderContentTypeOptionsProperties contentTypeOptions = properties.getContentTypeOptions();
-			if (contentTypeOptions.isEnabled()) {
-				headers.contentTypeOptions();
-			} else {
-				headers.contentTypeOptions().disable();
-			}
-
-			HeaderXssProtectionProperties xssProtection = properties.getXssProtection();
-			if (xssProtection.isEnabled()) {
-				headers.xssProtection().xssProtectionEnabled(xssProtection.isEnabled()).block(xssProtection.isBlock());
-			} else {
-				headers.xssProtection().disable();
-			}
-
-			HeaderCacheControlProperties cacheControl = properties.getCacheControl();
-			if (cacheControl.isEnabled()) {
-				headers.cacheControl();
-			} else {
-				headers.cacheControl().disable();
-			}
-
-			HeaderHstsProperties hsts = properties.getHsts();
-			if (hsts.isEnabled()) {
-				 headers.httpStrictTransportSecurity()
-						.includeSubDomains(hsts.isIncludeSubDomains())
-						.maxAgeInSeconds(hsts.getMaxAgeInSeconds());
-			} else {
-				headers.httpStrictTransportSecurity().disable();
-			}
-
-			HeaderFrameOptionsProperties frameOptions = properties.getFrameOptions();
-			if (frameOptions.isEnabled()) {
-				FrameOptionsConfig config = headers.frameOptions();
-				if (frameOptions.isDeny()) {
-					config.deny();
-				} else if (frameOptions.isSameOrigin()) {
-					config.sameOrigin();
-				}
-			} else {
-				headers.frameOptions().disable();
-			}
-
-			HeaderHpkpProperties hpkp = properties.getHpkp();
-			if (hpkp.isEnabled()) {
-				 headers.httpPublicKeyPinning()
-						.includeSubDomains(hpkp.isIncludeSubDomains())
-						.maxAgeInSeconds(hpkp.getMaxAgeInSeconds())
-						.reportOnly(hpkp.isReportOnly())
-						.reportUri(hpkp.getReportUri())
-						.withPins(hpkp.getPins())
-						.addSha256Pins(hpkp.getSha256Pins());
-			} else {
-				headers.httpPublicKeyPinning().disable();
-			}
-
-			HeaderContentSecurityPolicyProperties contentSecurityPolicy = properties.getContentSecurityPolicy();
-			if (contentSecurityPolicy.isEnabled()) {
-				ContentSecurityPolicyConfig config = headers.contentSecurityPolicy(contentSecurityPolicy.getPolicyDirectives());
-				if (contentSecurityPolicy.isReportOnly()) {
-					config.reportOnly();
-				}
-			}
-
-			HeaderReferrerPolicyProperties referrerPolicy = properties.getReferrerPolicy();
-			if (referrerPolicy.isEnabled()) {
-				headers.referrerPolicy();
-			}
-
-			HeaderFeaturePolicyProperties featurePolicy = properties.getFeaturePolicy();
-			if (featurePolicy.isEnabled()) {
-				headers.featurePolicy(featurePolicy.getPolicyDirectives());
-			}
-
-		} else {
-			http.headers().cacheControl().disable()// 禁用缓存
-					.and().cors();
-		}
+	protected AuthenticationEntryPoint authenticationEntryPoint(List<MatchedAuthenticationEntryPoint> entryPoints) {
+		return WebSecurityUtils.authenticationEntryPoint(authcProperties, sessionMgtProperties, entryPoints);
 	}
 
 	/**
-	 * CSRF 配置
-	 * 
-	 * @author ： <a href="https://github.com/hiwepy">wandl</a>
-	 * @param http  the HttpSecurity
-	 * @param csrf the Security Headers Csrf Properties
-	 * @throws Exception the Exception
+	 * Builds the {@link AuthenticationSuccessHandler} from the listeners and matched handlers.
+	 *
+	 * @param authenticationListeners the registered authentication listeners
+	 * @param successHandlers         the registered matched success handlers
+	 * @return a composite authentication success handler
 	 */
-	protected void configure(HttpSecurity http, SecurityHeaderCsrfProperties csrf) throws Exception {
-		// CSRF 配置
-		if (csrf.isEnabled()) {
-			http.csrf()
-				.csrfTokenRepository(WebSecurityUtils.csrfTokenRepository(sessionMgtProperties))
-				.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()));
-		} else {
-			http.csrf().disable();
-		}
+	protected AuthenticationSuccessHandler authenticationSuccessHandler(
+			List<AuthenticationListener> authenticationListeners,
+			List<MatchedAuthenticationSuccessHandler> successHandlers) {
+		return WebSecurityUtils.authenticationSuccessHandler(authcProperties, sessionMgtProperties,
+				authenticationListeners, successHandlers);
 	}
 
-	@Override
+	/**
+	 * Builds the {@link AuthenticationFailureHandler} from the listeners and matched handlers.
+	 *
+	 * @param authenticationListeners the registered authentication listeners
+	 * @param failureHandlers         the registered matched failure handlers
+	 * @return a composite authentication failure handler
+	 */
+	protected AuthenticationFailureHandler authenticationFailureHandler(
+			List<AuthenticationListener> authenticationListeners,
+			List<MatchedAuthenticationFailureHandler> failureHandlers) {
+		return WebSecurityUtils.authenticationFailureHandler(authcProperties, sessionMgtProperties,
+				authenticationListeners, failureHandlers);
+	}
+
+	/**
+	 * @return the invalid-session strategy ({@code null} by default; subclasses may override).
+	 */
+	protected InvalidSessionStrategy invalidSessionStrategy() {
+		return null;
+	}
+
+	/**
+	 * Builds a composite {@link LogoutHandler} from the given handlers.
+	 *
+	 * @param logoutHandlers the registered logout handlers
+	 * @return a composite logout handler
+	 */
+	protected LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
+		return WebSecurityUtils.logoutHandler(logoutHandlers);
+	}
+
+	/**
+	 * @return the {@link RequestCache} built from the authentication and session properties.
+	 */
+	protected RequestCache requestCache() {
+		return WebSecurityUtils.requestCache(authcProperties, sessionMgtProperties);
+	}
+
+	/**
+	 * @return a {@link NullRememberMeServices} (remember-me disabled) by default.
+	 */
+	protected RememberMeServices rememberMeServices() {
+		return new NullRememberMeServices();
+	}
+
+	/**
+	 * @return a {@link SessionRegistryImpl} tracking active HTTP sessions.
+	 */
+	protected SessionRegistry sessionRegistry() {
+		return new SessionRegistryImpl();
+	}
+
+	/**
+	 * @return a {@link NullAuthenticatedSessionStrategy} by default.
+	 */
+	protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+		return new NullAuthenticatedSessionStrategy();
+	}
+
+	/**
+	 * @return the expired-session strategy ({@code null} by default; subclasses may override).
+	 */
+	protected SessionInformationExpiredStrategy sessionInformationExpiredStrategy() {
+		return null;
+	}
+
+	/**
+	 * Delegates to {@link #customize(WebSecurity)} to apply the web-security customisation.
+	 *
+	 * @param web the {@link WebSecurity} to configure
+	 * @throws Exception if configuration fails
+	 */
 	public void configure(WebSecurity web) throws Exception {
-
-		// 对过滤链按过滤器名称进行分组
-		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet()
-				.stream().collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
-
-		List<Entry<String, String>> noneEntries = groupingMap.get("anon");
-		List<String> permitMatchers = new ArrayList<String>();
-		if (!CollectionUtils.isEmpty(noneEntries)) {
-			permitMatchers = noneEntries.stream().map(mapper -> {
-				return mapper.getKey();
-			}).collect(Collectors.toList());
-		}
-		web.ignoring().antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
-				.antMatchers(HttpMethod.OPTIONS, "/**");
-
-		super.configure(web);
+		customize(web);
 	}
 
-	protected CorsConfigurationSource configurationSource(SecurityHeaderCorsProperties cors) {
-
-		UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();
-
-		/**
-		 * 批量设置参数
-		 */
-		PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
-
-		map.from(cors.isAlwaysUseFullPath()).to(configurationSource::setAlwaysUseFullPath);
-		map.from(cors.getCorsConfigurations()).to(configurationSource::setCorsConfigurations);
-		map.from(cors.isRemoveSemicolonContent()).to(configurationSource::setRemoveSemicolonContent);
-		map.from(cors.isUrlDecode()).to(configurationSource::setUrlDecode);
-
-		return configurationSource;
-	}
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-
-		// 对过滤链按过滤器名称进行分组
-		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet()
-				.stream().collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
-
-		// https://www.jianshu.com/p/01498e0e0c83
-		Set<Object> keySet = groupingMap.keySet();
-		for (Object key : keySet) {
-			// Ant表达式 = roles[xxx]
-			Matcher rolesMatcher = rolesPattern.matcher(key.toString());
-			if (rolesMatcher.find()) {
-
-				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
-				// 角色
-				String[] roles = StringUtils.split(rolesMatcher.group(1), ",");
-				if (ArrayUtils.isNotEmpty(roles)) {
-					if (roles.length > 1) {
-						// 如果用户具备给定角色中的某一个的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyRole(roles).and();
-					} else {
-						// 如果用户具备给定角色的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasRole(roles[0]).and();
-					}
-				}
-			}
-			// Ant表达式 = perms[xxx]
-			Matcher permsMatcher = permsPattern.matcher(key.toString());
-			if (permsMatcher.find()) {
-
-				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
-				// 权限标记
-				String[] perms = StringUtils.split(permsMatcher.group(1), ",");
-				if (ArrayUtils.isNotEmpty(perms)) {
-					if (perms.length > 1) {
-						// 如果用户具备给定全权限的某一个的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyAuthority(perms).and();
-					} else {
-						// 如果用户具备给定权限的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAuthority(perms[0]).and();
-					}
-				}
-			}
-			// Ant表达式 = ipaddr[192.168.1.0/24]
-			Matcher ipMatcher = ipaddrPattern.matcher(key.toString());
-			if (ipMatcher.find()) {
-
-				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
-				// ipaddress
-				String ipaddr = ipMatcher.group(1);
-				if (StringUtils.hasText(ipaddr)) {
-					// 如果请求来自给定IP地址的话，就允许访问
-					http = http.authorizeRequests()
-							.expressionHandler(customWebSecurityExpressionHandler())
-							.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-							.hasIpAddress(ipaddr).and();
-				}
-			}
-		}
-	}
-
-	public SecurityExpressionHandler<FilterInvocation> customWebSecurityExpressionHandler() {
-		return new CustomWebSecurityExpressionHandler();
-	}
-
-	protected void configure(HttpSecurity http, SecurityHeaderCorsProperties cors) throws Exception {
-		if (cors.isEnabled()) {
-			http.cors().configurationSource(this.configurationSource(cors));
-		} else {
-			http.cors().disable();
-		}
-	}
-	
-	public SecuritySessionMgtProperties getSessionMgtProperties() {
-		return sessionMgtProperties;
-	}
-	
 }

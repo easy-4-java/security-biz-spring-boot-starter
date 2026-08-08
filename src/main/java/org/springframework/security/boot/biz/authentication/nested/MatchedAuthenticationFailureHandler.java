@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,23 +15,23 @@
  */
 package org.springframework.security.boot.biz.authentication.nested;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.boot.utils.SecurityResponseUtils;
 import org.springframework.security.core.AuthenticationException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
  * TODO
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public interface MatchedAuthenticationFailureHandler {
 
 	/**
 	 * Whether it is supported
-	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @author [@Loong Wan](https://github.com/loong10k)
 	 * @param e  the authentication exception
 	 * @return true or false
 	 */

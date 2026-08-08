@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,25 +15,44 @@
  */
 package org.springframework.security.boot.biz.property;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import javax.servlet.http.HttpServletResponse;
-
 /**
- * Security Session Mgt Properties
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * Configuration properties for HTTP session management in the security-biz
+ * starter.
+ * <p>
+ * Bound to the {@code spring.security.session.*} namespace.</p>
+ *
+ * <h3>Configuration</h3>
+ * <ul>
+ *   <li>{@code spring.security.session.allow-session-creation} — whether session creation is allowed (default {@code true})</li>
+ *   <li>{@code spring.security.session.enable-session-url-rewriting} — allow JSESSIONID to be rewritten into URLs (default {@code false})</li>
+ *   <li>{@code spring.security.session.failure-url} — redirect target for session errors (default {@code /error})</li>
+ *   <li>{@code spring.security.session.maximum-sessions} — max concurrent sessions per user (default {@code 1})</li>
+ *   <li>{@code spring.security.session.max-sessions-prevents-login} — block new logins when the limit is reached (default {@code false})</li>
+ *   <li>{@code spring.security.session.creation-policy} — Spring Security {@link SessionCreationPolicy} (default {@code STATELESS})</li>
+ *   <li>{@code spring.security.session.fixation-policy} — {@link SessionFixationPolicy} (default {@code NONE})</li>
+ *   <li>{@code spring.security.session.session-attr-name} — session attribute for the saved request (default {@code SPRING_SECURITY_SAVED_REQUEST})</li>
+ *   <li>{@code spring.security.session.remember} / {@code .logout} — nested remember-me and logout sub-properties</li>
+ * </ul>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 @ConfigurationProperties(SecuritySessionMgtProperties.PREFIX)
 @Data
 public class SecuritySessionMgtProperties {
 
+	/** Configuration prefix for the session-management properties. */
 	public static final String PREFIX = "spring.security.session";
-	
+
+	/** Whether session creation is allowed (default {@code true}). */
 	private boolean allowSessionCreation = true;
-	
+
 	/**
 	 * If set to true, allows HTTP sessions to be rewritten in the URLs when using
 	 * {@link HttpServletResponse#encodeRedirectURL(String)} or
@@ -46,8 +65,8 @@ public class SecuritySessionMgtProperties {
 	 *                                  (default)
 	 */
 	private boolean enableSessionUrlRewriting;
-	
-	/**  */
+
+	/** Redirect target used when a session error occurs (default {@code /error}). */
 	private String failureUrl = "/error";
 	/**
 	 * Controls the maximum number of sessions for a user. The default is to allow
@@ -67,8 +86,12 @@ public class SecuritySessionMgtProperties {
 	 */
 	private boolean maxSessionsPreventsLogin = false;
 	
+	/** Spring Security session-creation policy (default {@code STATELESS}). */
 	private SessionCreationPolicy creationPolicy = SessionCreationPolicy.STATELESS;
+
+	/** Session-fixation protection policy (default {@code NONE}). */
 	private SessionFixationPolicy fixationPolicy = SessionFixationPolicy.NONE;
+
 	/**
 	 * If the {@code sessionAttrName} property is set, the request is stored in
 	 * the session using this attribute name. Default is
@@ -76,11 +99,13 @@ public class SecuritySessionMgtProperties {
 	 */
 	private String sessionAttrName = "SPRING_SECURITY_SAVED_REQUEST";
 
+	/** Nested remember-me configuration. */
 	@NestedConfigurationProperty
 	private SecurityRememberMeProperties remember = new SecurityRememberMeProperties();
-	
+
+	/** Nested logout configuration. */
 	@NestedConfigurationProperty
 	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
-	
-	
+
+
 }

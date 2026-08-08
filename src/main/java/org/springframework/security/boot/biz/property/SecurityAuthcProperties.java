@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,18 +15,17 @@
  */
 package org.springframework.security.boot.biz.property;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Security Authc Properties
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Data
 public class SecurityAuthcProperties {
@@ -34,13 +33,22 @@ public class SecurityAuthcProperties {
 	/** Authorization Path Pattern */
 	private String pathPattern = "/login";
 	
-	/** 重定向地址：会话注销后的重定向地址 */
+	/**
+	 * 重定向地址：会话注销后的重定向地址
+	 */
 	private String redirectUrl = "/";
-	/** 系统主页：登录成功后跳转路径 */
+	/**
+	 * 系统主页：登录成功后跳转路径
+	 */
 	private String successUrl = "/index";;
-	/** 异常页面：认证失败时的跳转路径 */
+	/**
+	 * 异常页面：认证失败时的跳转路径
+	 */
 	private String failureUrl = "/error";
-	
+	/**
+	 * 未授权页面：无权限时的跳转路径
+	 */
+	private String accessDeniedUrl = "/errors/401";
 	/**
 	 * Indicates if the filter chain should be continued prior to delegation to
 	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
@@ -70,16 +78,16 @@ public class SecurityAuthcProperties {
 	 * Defines whether only HTTP POST requests will be allowed by this filter. If set to
 	 * true, and an authentication request is received which is not a POST request, an
 	 * exception will be raised immediately and authentication will not be attempted. The
-	 * <tt>unsuccessfulAuthentication()</tt> method will be called as if handling a failed
+	 * &lt;tt&gt;unsuccessfulAuthentication()&lt;/tt&gt; method will be called as if handling a failed
 	 * authentication.
 	 * <p>
-	 * Defaults to <tt>true</tt> but may be overridden by subclasses.
+	 * Defaults to &lt;tt&gt;true&lt;/tt&gt; but may be overridden by subclasses.
 	 */
 	private boolean postOnly = true;
 	
 	/**
-	 * If set to <tt>true</tt>, performs a forward to the failure destination URL instead
-	 * of a redirect. Defaults to <tt>false</tt>.
+	 * If set to &lt;tt&gt;true&lt;/tt&gt;, performs a forward to the failure destination URL instead
+	 * of a redirect. Defaults to &lt;tt&gt;false&lt;/tt&gt;.
 	 */
 	private boolean useForward = false;
 	
@@ -106,6 +114,9 @@ public class SecurityAuthcProperties {
 	
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
+
+	@NestedConfigurationProperty
+	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
 	
 	/**
 	 * If this property is set, the current request will be checked for this a parameter
