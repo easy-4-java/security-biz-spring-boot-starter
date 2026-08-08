@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,8 +18,10 @@ package org.springframework.security.boot.biz.property;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * Session Fixation Policy 
- * @author ： <a href="https://github.com/hiwepy">wandl</a>
+ * Session-fixation protection policy applied when a session authenticates.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public enum SessionFixationPolicy {
 
@@ -49,6 +51,12 @@ public enum SessionFixationPolicy {
 	 */
 	NONE;
 	
+	/**
+	 * Compares this policy to another by ordinal.
+	 *
+	 * @param policy the policy to compare to
+	 * @return {@code true} if the two policies are the same
+	 */
 	public boolean equals(SessionFixationPolicy policy) {
 		return this.compareTo(policy) == 0;
 	}
