@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 认证请求成功后的处理实现
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class ListenedAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 	

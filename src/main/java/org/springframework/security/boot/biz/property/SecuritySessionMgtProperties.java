@@ -23,7 +23,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 /**
  * Security Session Mgt Properties
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @ConfigurationProperties(SecuritySessionMgtProperties.PREFIX)
 @Data

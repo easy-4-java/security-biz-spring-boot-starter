@@ -17,7 +17,7 @@ package org.springframework.security.boot.utils;
 
 /**
  * Spring StringUtils 扩展
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class StringUtils extends org.springframework.util.StringUtils {
 

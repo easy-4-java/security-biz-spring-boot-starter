@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * TODO
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public interface MatchedServerAuthenticationFailureHandler {
 
@@ -35,7 +35,7 @@ public interface MatchedServerAuthenticationFailureHandler {
 	
 	/**
 	 * Whether it is supported
-	 * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+	 * @author [@Loong Wan](https://github.com/loong10k)
 	 * @param e  the authentication exception
 	 * @return true or false
 	 */

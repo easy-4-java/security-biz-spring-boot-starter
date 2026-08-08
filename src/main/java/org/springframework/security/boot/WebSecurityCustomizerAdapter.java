@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
 /**
  * WebSecurityCustomizer Adapter
  * @see WebSecurityCustomizer
- * @author ： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomizer, ApplicationContextAware {
 
@@ -91,7 +91,7 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 	/**
 	 * Headers 配置
 	 * 
-	 * @author ： <a href="https://github.com/easy-4-java">wandl</a>
+	 * @author [@Loong Wan](https://github.com/loong10k)
 	 * @param http  the HttpSecurity
 	 * @param properties the Security Headers Properties
 	 * @throws Exception the Exception
@@ -194,7 +194,7 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 	/**
 	 * CSRF 配置
 	 * 
-	 * @author ： <a href="https://github.com/easy-4-java">wandl</a>
+	 * @author [@Loong Wan](https://github.com/loong10k)
 	 * @param http  the HttpSecurity
 	 * @param csrf the Security Headers Csrf Properties
 	 * @throws Exception the Exception

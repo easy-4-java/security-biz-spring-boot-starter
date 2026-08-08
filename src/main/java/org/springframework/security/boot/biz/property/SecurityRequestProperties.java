@@ -17,7 +17,7 @@ package org.springframework.security.boot.biz.property;
 
 /**
  * Security Request Properties
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class SecurityRequestProperties {
 

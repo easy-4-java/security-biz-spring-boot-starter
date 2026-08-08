@@ -17,7 +17,7 @@ package org.springframework.security.boot.biz.exception;
 
 /**
  * Authentication Captcha Incorrect Exception
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @SuppressWarnings("serial")
 public class AuthenticationCaptchaIncorrectException extends AuthenticationExceptionAdapter {

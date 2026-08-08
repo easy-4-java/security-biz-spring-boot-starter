@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Auth response for interacting with client.
  * 
- * @author ： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class AuthResponse<T> {
 

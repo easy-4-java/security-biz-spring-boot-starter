@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpSession;
 
 /**
  * Session Fixation Policy 
- * @author ： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public enum SessionFixationPolicy {
 

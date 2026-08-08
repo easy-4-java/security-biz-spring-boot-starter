@@ -24,7 +24,7 @@ import java.util.Date;
 
 /**
  * Captcha Resolver From Session 
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class SessionCaptchaResolver implements CaptchaResolver {
 

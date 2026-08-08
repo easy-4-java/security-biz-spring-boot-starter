@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Post认证请求成功后的处理实现
  * 
- * @author ： <a href="https://github.com/easy-4-java">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 

@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * 
  * Security 业务参数配置
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @ConfigurationProperties(SecurityBizProperties.PREFIX)
 @Getter

@@ -23,7 +23,7 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 
 /**
  * Security Failure Retry Properties
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Getter
 @Setter

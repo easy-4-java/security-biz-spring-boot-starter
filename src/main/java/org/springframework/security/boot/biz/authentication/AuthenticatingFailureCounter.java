@@ -20,7 +20,7 @@ import jakarta.servlet.ServletResponse;
 
 /**
  * Authenticating Failure Counter
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public interface AuthenticatingFailureCounter {
 
@@ -29,7 +29,7 @@ public interface AuthenticatingFailureCounter {
 	/**
 	 * 
 	 * Get The Failure Counter
-	 * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+	 * @author [@Loong Wan](https://github.com/loong10k)
 	 * @param request ServletRequest
 	 * @param response ServletResponse
 	 * @param retryTimesKeyAttribute The retryTimes Key Attribute
@@ -40,7 +40,7 @@ public interface AuthenticatingFailureCounter {
 	/**
 	 * 
 	 * Failure Counter increment
-	 * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+	 * @author [@Loong Wan](https://github.com/loong10k)
 	 * @param request ServletRequest
 	 * @param response ServletResponse
 	 * @param retryTimesKeyAttribute The retryTimes Key Attribute

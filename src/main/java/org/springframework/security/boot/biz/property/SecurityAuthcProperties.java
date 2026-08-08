@@ -25,7 +25,7 @@ import org.springframework.util.Assert;
 
 /**
  * Security Authc Properties
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Data
 public class SecurityAuthcProperties {

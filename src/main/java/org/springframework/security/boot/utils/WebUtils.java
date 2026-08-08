@@ -22,7 +22,7 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 
 /**
  * Spring WebUtils 扩展
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class WebUtils extends org.springframework.web.util.WebUtils {
 

@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * http://blog.csdn.net/caoshuming_500/article/details/20952329
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class RemoteAddrUtils {
 
@@ -32,7 +32,7 @@ public class RemoteAddrUtils {
 	/**
 	 * 
 	 * 获取请求客户端IP地址，支持代理服务器
-	 * @author 		： <a href="https://github.com/easy-4-java">hiwepy</a>
+	 * @author [@Loong Wan](https://github.com/loong10k)
 	 * @param request the HttpServletRequest
 	 * @return the Remote Addr
 	 */

@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * Security Redirect Properties
- * @author 		： <a href="https://github.com/easy-4-java">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Getter
 @Setter
