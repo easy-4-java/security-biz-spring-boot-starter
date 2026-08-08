@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,9 +24,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 
- * Security 业务参数配置
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * Business-level configuration properties for the Spring Security Biz starter.
+ * <p>
+ * Bound to the {@code spring.security.*} namespace. Currently exposes a
+ * Shiro-style filter-chain definition map used to seed the default security
+ * filter rules (URL pattern &rarr; chain name).</p>
+ *
+ * <h3>Configuration</h3>
+ * <ul>
+ *   <li>{@code spring.security.filter-chain-definition-map} &mdash; ordered map
+ *       of URL pattern to filter-chain name used to initialise the default
+ *       filter rules (default empty)</li>
+ * </ul>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 @ConfigurationProperties(SecurityBizProperties.PREFIX)
 @Getter
@@ -34,11 +46,13 @@ import java.util.Map;
 @ToString
 public class SecurityBizProperties {
 
+	/** Configuration prefix for the security business properties. */
 	public static final String PREFIX = "spring.security";
-	
+
 	/**
-	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则 Map<pattern, Chain name>
+	 * Shiro-style filter-chain definition map (URL pattern &rarr; chain name)
+	 * used to initialise the default security filter rules.
 	 */
 	private Map<String, String > filterChainDefinitionMap = new LinkedHashMap<>(16);
-	
+
 }

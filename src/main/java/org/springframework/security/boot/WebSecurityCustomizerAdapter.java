@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -38,7 +38,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -52,20 +53,45 @@ import java.util.stream.Collectors;
 
 
 /**
- * WebSecurityCustomizer Adapter
+ * Base adapter for building Spring Security {@link WebSecurityCustomizer}
+ * instances used by the security-biz starter. Provides reusable hooks for
+ * configuring the authentication manager, security headers, CSRF, CORS and the
+ * rule-based authorization derived from the Shiro-style filter-chain
+ * definition map.
+ * <p>
+ * Subclasses extend this adapter (see
+ * {@link WebSecurityBizConfigurerAdapter}) to plug in authentication-specific
+ * wiring while inheriting the common configuration helpers.</p>
+ *
  * @see WebSecurityCustomizer
- * @author ： <a href="https://github.com/hiwepy">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomizer, ApplicationContextAware {
 
+	/** Pattern matching {@code roles[...]} chain names, e.g. {@code roles[admin,user]}. */
 	protected Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
+	/** Pattern matching {@code perms[...]} chain names, e.g. {@code perms[user:read]}. */
 	protected Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
+	/** Pattern matching {@code ipaddr[...]} chain names, e.g. {@code ipaddr[192.168.1.0/24]}. */
 	protected Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
+	/** Bound business-level security properties (filter-chain definition map). */
 	protected final SecurityBizProperties bizProperties;
+	/** Bound session-management properties. */
 	protected final SecuritySessionMgtProperties sessionMgtProperties;
+	/** Authentication providers registered with this adapter. */
 	protected final List<AuthenticationProvider> authenticationProviders;
+	/** The application context, injected via {@link ApplicationContextAware}. */
 	protected ApplicationContext applicationContext;
 
+	/**
+	 * Binds the business properties, session-management properties and
+	 * authentication providers used by this adapter.
+	 *
+	 * @param bizProperties          business-level security properties
+	 * @param sessionMgtProperties   session-management properties
+	 * @param authenticationProviders authentication providers to register
+	 */
 	public WebSecurityCustomizerAdapter(SecurityBizProperties bizProperties,
 										SecuritySessionMgtProperties sessionMgtProperties,
 										List<AuthenticationProvider> authenticationProviders) {
@@ -74,13 +100,28 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 		this.authenticationProviders = authenticationProviders;
 	}
 
+	/**
+	 * Builds the {@link AuthenticationManager} from the registered providers.
+	 * <p>Credential erasure is disabled so remember-me services can still
+	 * access the credentials after authentication.</p>
+	 *
+	 * @return a {@link ProviderManager} aggregating the authentication providers
+	 * @throws Exception if the manager cannot be built
+	 */
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		ProviderManager authenticationManager = new ProviderManager(authenticationProviders);
-		// 不擦除认证密码，擦除会导致TokenBasedRememberMeServices因为找不到Credentials再调用UserDetailsService而抛出UsernameNotFoundException
+		// Do not erase credentials: erasing would force TokenBasedRememberMeServices to
+		// re-invoke UserDetailsService and throw UsernameNotFoundException.
 		authenticationManager.setEraseCredentialsAfterAuthentication(false);
 		return authenticationManager;
 	}
-	
+
+	/**
+	 * Registers every authentication provider with the given builder.
+	 *
+	 * @param auth the {@link AuthenticationManagerBuilder} to configure
+	 * @throws Exception if a provider cannot be registered
+	 */
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		for (AuthenticationProvider authenticationProvider : authenticationProviders) {
 			auth.authenticationProvider(authenticationProvider);
@@ -88,12 +129,13 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 	}
 
 	/**
-	 * Headers 配置
-	 * 
-	 * @author ： <a href="https://github.com/hiwepy">wandl</a>
-	 * @param http  the HttpSecurity
-	 * @param properties the Security Headers Properties
-	 * @throws Exception the Exception
+	 * Configures the security response headers (content-type options, XSS
+	 * protection, cache control, HSTS, frame options, HPKP, CSP, referrer
+	 * policy, feature/permissions policy) according to the bound properties.
+	 *
+	 * @param http        the HttpSecurity to configure
+	 * @param properties  the security headers properties
+	 * @throws Exception if configuration fails
 	 */
 	@SuppressWarnings("rawtypes")
 	protected void configure(HttpSecurity http, SecurityHeadersProperties properties) throws Exception {
@@ -146,15 +188,15 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 
 				HeaderHpkpProperties hpkp = properties.getHpkp();
 				if (Objects.nonNull(hpkp) && hpkp.isEnabled()) {
-					headers.httpPublicKeyPinning()
+					headers.httpPublicKeyPinning(config -> config
 							.includeSubDomains(hpkp.isIncludeSubDomains())
 							.maxAgeInSeconds(hpkp.getMaxAgeInSeconds())
 							.reportOnly(hpkp.isReportOnly())
 							.reportUri(hpkp.getReportUri())
 							.withPins(hpkp.getPins())
-							.addSha256Pins(hpkp.getSha256Pins());
+							.addSha256Pins(hpkp.getSha256Pins()));
 				} else {
-					headers.httpPublicKeyPinning().disable();
+					headers.httpPublicKeyPinning(config -> config.disable());
 				}
 
 				HeaderContentSecurityPolicyProperties contentSecurityPolicy = properties.getContentSecurityPolicy();
@@ -191,15 +233,16 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 	}
 
 	/**
-	 * CSRF 配置
-	 * 
-	 * @author ： <a href="https://github.com/hiwepy">wandl</a>
-	 * @param http  the HttpSecurity
-	 * @param csrf the Security Headers Csrf Properties
-	 * @throws Exception the Exception
+	 * Configures CSRF protection. When enabled, a token repository is wired and
+	 * the configured request matchers are ignored; when disabled CSRF is
+	 * turned off entirely.
+	 *
+	 * @param http  the HttpSecurity to configure
+	 * @param csrf  the CSRF properties
+	 * @throws Exception if configuration fails
 	 */
 	protected void configure(HttpSecurity http, SecurityHeaderCsrfProperties csrf) throws Exception {
-		// CSRF 配置
+		// CSRF configuration.
 		if (csrf.isEnabled()) {
 			http.csrf(csrfConfigurer -> {
 				csrfConfigurer.csrfTokenRepository(WebSecurityUtils.csrfTokenRepository(sessionMgtProperties))
@@ -210,10 +253,17 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 		}
 	}
 
+	/**
+	 * Customises the {@link WebSecurity} by ignoring the {@code anon} patterns
+	 * declared in the filter-chain definition map (and all {@code OPTIONS}
+	 * requests), so those requests bypass the security filter chain entirely.
+	 *
+	 * @param web the {@link WebSecurity} to customise
+	 */
 	@Override
 	public void customize(WebSecurity web) {
 
-		// 对过滤链按过滤器名称进行分组
+		// Group the filter chain entries by filter (chain) name.
 		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet()
 				.stream().collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
 
@@ -228,14 +278,19 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 
 	}
 
+	/**
+	 * Builds a {@link UrlBasedCorsConfigurationSource} from the bound CORS
+	 * properties.
+	 *
+	 * @param cors the CORS properties
+	 * @return the configured CORS configuration source
+	 */
 	protected CorsConfigurationSource configurationSource(SecurityHeaderCorsProperties cors) {
 
 		UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();
 
-		/**
-		 * 批量设置参数
-		 */
-		PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+		// Apply all non-null bound properties onto the source.
+		PropertyMapper map = PropertyMapper.get();
 
 		map.from(cors.isAlwaysUseFullPath()).to(configurationSource::setAlwaysUseFullPath);
 		map.from(cors.getCorsConfigurations()).to(configurationSource::setCorsConfigurations);
@@ -245,9 +300,17 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 		return configurationSource;
 	}
 
+	/**
+	 * Configures the rule-based authorization for the given {@link HttpSecurity}
+	 * by parsing the Shiro-style chain names from the filter-chain definition
+	 * map: {@code roles[...]}, {@code perms[...]} and {@code ipaddr[...]}.
+	 *
+	 * @param http the HttpSecurity to configure
+	 * @throws Exception if configuration fails
+	 */
 	protected void configure(HttpSecurity http) throws Exception {
 
-		// 对过滤链按过滤器名称进行分组
+		// Group the filter chain entries by filter (chain) name.
 		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet()
 				.stream().collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
 
@@ -264,16 +327,14 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 				if (ArrayUtils.isNotEmpty(roles)) {
 					if (roles.length > 1) {
 						// 如果用户具备给定角色中的某一个的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
+						http.authorizeHttpRequests(authorize -> authorize
 								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyRole(roles).and();
+								.hasAnyRole(roles));
 					} else {
 						// 如果用户具备给定角色的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
+						http.authorizeHttpRequests(authorize -> authorize
 								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasRole(roles[0]).and();
+								.hasRole(roles[0]));
 					}
 				}
 			}
@@ -287,16 +348,14 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 				if (ArrayUtils.isNotEmpty(perms)) {
 					if (perms.length > 1) {
 						// 如果用户具备给定全权限的某一个的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
+						http.authorizeHttpRequests(authorize -> authorize
 								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyAuthority(perms).and();
+								.hasAnyAuthority(perms));
 					} else {
 						// 如果用户具备给定权限的话，就允许访问
-						http = http.authorizeRequests()
-								.expressionHandler(customWebSecurityExpressionHandler())
+						http.authorizeHttpRequests(authorize -> authorize
 								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAuthority(perms[0]).and();
+								.hasAuthority(perms[0]));
 					}
 				}
 			}
@@ -309,19 +368,32 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 				String ipaddr = ipMatcher.group(1);
 				if (StringUtils.hasText(ipaddr)) {
 					// 如果请求来自给定IP地址的话，就允许访问
-					http = http.authorizeRequests()
-							.expressionHandler(customWebSecurityExpressionHandler())
+					WebExpressionAuthorizationManager authorizationManager =
+							new WebExpressionAuthorizationManager("hasIpAddress('" + ipaddr + "')");
+					authorizationManager.setExpressionHandler(customWebSecurityExpressionHandler());
+					http.authorizeHttpRequests(authorize -> authorize
 							.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-							.hasIpAddress(ipaddr).and();
+							.access(authorizationManager));
 				}
 			}
 		}
 	}
 
-	public SecurityExpressionHandler<FilterInvocation> customWebSecurityExpressionHandler() {
+	/**
+	 * @return a {@link CustomWebSecurityExpressionHandler} for SpEL-based access rules.
+	 */
+	public SecurityExpressionHandler<RequestAuthorizationContext> customWebSecurityExpressionHandler() {
 		return new CustomWebSecurityExpressionHandler();
 	}
 
+	/**
+	 * Configures CORS for the given {@link HttpSecurity} using the bound CORS
+	 * properties; disables CORS entirely when the properties are absent or disabled.
+	 *
+	 * @param http           the HttpSecurity to configure
+	 * @param corsProperties the CORS properties
+	 * @throws Exception if configuration fails
+	 */
 	protected void configure(HttpSecurity http, SecurityHeaderCorsProperties corsProperties) throws Exception {
 		if (Objects.nonNull(corsProperties) && corsProperties.isEnabled()) {
 			http.cors(config -> config.configurationSource(this.configurationSource(corsProperties)));
@@ -330,15 +402,23 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 		}
 	}
 	
+	/** @return the bound session-management properties. */
 	public SecuritySessionMgtProperties getSessionMgtProperties() {
 		return sessionMgtProperties;
 	}
 
+	/**
+	 * Stores the {@link ApplicationContext} injected by Spring.
+	 *
+	 * @param applicationContext the running application context
+	 * @throws BeansException never thrown by the current implementation
+	 */
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+	/** @return the application context. */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

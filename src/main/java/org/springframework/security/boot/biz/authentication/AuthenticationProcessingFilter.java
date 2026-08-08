@@ -18,13 +18,20 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- * Authentication Processing Filter
- * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
+ * Base authentication processing filter for the security-biz starter.
+ * <p>
+ * Extends Spring Security's {@link AbstractAuthenticationProcessingFilter}
+ * with common HTTP header handling (uid / sign / location / app metadata)
+ * used by the feature-specific authentication filters in downstream starters.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public abstract class AuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
+	/** Default value used when the longitude/latitude headers are absent. */
 	public static final String DEFAULT_LONGITUDE_LATITUDE = "0.000000";
-	
+
 	/**
 	 * HTTP Authorization header, equal to <code>X-Uid</code>
 	 */
@@ -42,7 +49,7 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 	 */
 	public static final String LATITUDE_HEADER = "X-Latitude";
 	/**
-	 * HTTP Authorization header, equal to <code>X-X-APP-ID</code>
+	 * HTTP Authorization header, equal to <code>X-APP-ID</code>
 	 */
 	public static final String APP_ID_HEADER = "X-APP-ID";
 	/**
@@ -53,13 +60,20 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 	 * HTTP Authorization header, equal to <code>X-APP-VERSION</code>
 	 */
 	public static final String APP_VERSION_HEADER = "X-APP-VERSION";
-	
+
+	/** Configurable name of the user-id header (default {@value #UID_HEADER}). */
 	private String uidHeaderName = UID_HEADER;
+	/** Configurable name of the signature header (default {@value #SIGN_HEADER}). */
 	private String signHeaderName = SIGN_HEADER;
+	/** Configurable name of the longitude header (default {@value #LONGITUDE_HEADER}). */
 	private String longitudeHeaderName = LONGITUDE_HEADER;
+	/** Configurable name of the latitude header (default {@value #LATITUDE_HEADER}). */
 	private String latitudeHeaderName = LATITUDE_HEADER;
+	/** Configurable name of the app-id header (default {@value #APP_ID_HEADER}). */
 	private String appIdHeaderName = APP_ID_HEADER;
+	/** Configurable name of the app-channel header (default {@value #APP_CHANNEL_HEADER}). */
 	private String appChannelHeaderName = APP_CHANNEL_HEADER;
+	/** Configurable name of the app-version header (default {@value #APP_VERSION_HEADER}). */
 	private String appVersionHeaderName = APP_VERSION_HEADER;
 	private final String format = "{} ：{}";
 	
