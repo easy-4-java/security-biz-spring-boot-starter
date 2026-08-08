@@ -21,7 +21,8 @@ import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ import java.io.IOException;
 /**
  * 
  * 账号、密码、验证码认证过滤器
- * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
@@ -60,11 +61,11 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 	// ===================================================================================================
 	
 	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper) {
-		super(new AntPathRequestMatcher("/login"));
+		super(PathPatternRequestMatcher.pathPattern("/login"));
 		this.objectMapper = objectMapper;
 	}
-	
-	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper, AntPathRequestMatcher requestMatcher) {
+
+	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper, RequestMatcher requestMatcher) {
 		super(requestMatcher);
 		this.objectMapper = objectMapper;
 	}
