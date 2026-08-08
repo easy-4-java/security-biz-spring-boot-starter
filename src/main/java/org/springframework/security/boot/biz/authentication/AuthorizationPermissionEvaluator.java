@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,14 +25,28 @@ import java.io.Serializable;
 import java.util.Collection;
 
 /**
- * TODO
- * 
- * @author ： <a href="https://github.com/hiwepy">wandl</a>
+ * Simple {@link PermissionEvaluator} that treats permission strings as
+ * authority names: the current user has permission when one of their granted
+ * authorities matches the requested permission (case-insensitive equality with
+ * {@code "*"} grants access to everything).
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class AuthorizationPermissionEvaluator implements PermissionEvaluator {
-	
+
+	/** Wildcard permission value that matches any authority (matches all). */
 	private static final String ALL = "*";
-	
+
+	/**
+	 * Returns {@code true} when the authenticated user has an authority equal to
+	 * the requested permission (or the permission is {@code "*"}).
+	 *
+	 * @param authentication      the current authentication
+	 * @param targetDomainObject  ignored
+	 * @param permission          the required permission / authority name
+	 * @return {@code true} if access is granted
+	 */
 	@Override
 	public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
 		if (StringUtils.equalsIgnoreCase(ALL, permission.toString())) {
@@ -46,9 +60,16 @@ public class AuthorizationPermissionEvaluator implements PermissionEvaluator {
 		}
 		return false;
 	}
-	
+
 	/**
-	   *  简单的字符串比较，相同则认为有权限
+	 * Returns {@code true} when the authenticated user has an authority equal to
+	 * the requested permission (or the permission is {@code "*"}).
+	 *
+	 * @param authentication the current authentication
+	 * @param targetId       ignored
+	 * @param targetType     ignored
+	 * @param permission     the required permission / authority name
+	 * @return {@code true} if access is granted
 	 */
 	@Override
 	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType,
@@ -64,7 +85,15 @@ public class AuthorizationPermissionEvaluator implements PermissionEvaluator {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Returns {@code true} when the current subject (resolved from the security
+	 * context) has an authority equal to the requested permission (or the
+	 * permission is {@code "*"}).
+	 *
+	 * @param permission the required permission / authority name
+	 * @return {@code true} if access is granted
+	 */
 	public boolean hasPermission(Object permission) {
 		if (StringUtils.equalsIgnoreCase(ALL, permission.toString())) {
 			return true;

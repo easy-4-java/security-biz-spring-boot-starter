@@ -23,7 +23,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Subject Utils
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @SuppressWarnings("unchecked")
 public class SubjectUtils {
