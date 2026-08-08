@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,7 +25,7 @@ import org.springframework.util.Assert;
 
 /**
  * Security Authc Properties
- * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Data
 public class SecurityAuthcProperties {
@@ -114,6 +114,9 @@ public class SecurityAuthcProperties {
 	
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
+
+	@NestedConfigurationProperty
+	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
 	
 	/**
 	 * If this property is set, the current request will be checked for this a parameter
