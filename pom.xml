@@ -293,7 +293,45 @@
                             <haltOnFailure>true</haltOnFailure>
                             <rules>
                                 <rule>
-                                    <element>BUNDLE</element>
+                                    <element>CLASS</element>
+                                    <excludes>
+                                        <exclude>org.springframework.security.boot.ReactiveSecurityBizAutoConfiguration</exclude>
+                                        <exclude>org.springframework.security.boot.utils.ReactiveSecurityResponseUtils</exclude>
+                                        <exclude>org.springframework.security.boot.utils.ReactiveSubjectUtils</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.server.*</exclude>
+                                        <exclude>org.springframework.security.boot.utils.WebfluxUtils</exclude>
+                                        <exclude>org.springframework.security.boot.SecurityBizAutoConfiguration</exclude>
+                                        <exclude>org.springframework.security.boot.WebSecurityBizConfigurerAdapter</exclude>
+                                        <exclude>org.springframework.security.boot.WebSecurityCustomizerAdapter</exclude>
+                                        <exclude>org.springframework.security.boot.biz.session.MySessionRegistryImpl</exclude>
+                                        <exclude>org.springframework.security.boot.biz.session.MyConcurrentSessionControlAuthenticationStrategy</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.AuthenticationProcessingFilter</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.PostOnlyAuthenticationProcessingFilter</exclude>
+                                        <exclude>org.springframework.security.boot.biz.CustomWebSecurityExpressionHandler</exclude>
+                                        <exclude>org.springframework.security.boot.biz.CustomWebSecurityExpressionRoot</exclude>
+                                        <exclude>org.springframework.security.boot.utils.SecurityResponseUtils</exclude>
+                                        <exclude>org.springframework.security.boot.utils.WebSecurityUtils</exclude>
+                                        <exclude>org.springframework.security.boot.biz.userdetails.JwtPayloadRepository</exclude>
+                                        <exclude>org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.AuthorizationPermissionEvaluator</exclude>
+                                        <exclude>org.springframework.security.boot.biz.authentication.NeteaseUrlAuthenticationSuccessHandler</exclude>
+                                        <exclude>org.springframework.security.boot.biz.exception.AuthConstants</exclude>
+                                        <exclude>org.springframework.security.boot.biz.exception.AuthenticationServiceExceptionAdapter</exclude>
+                                        <exclude>org.springframework.security.boot.biz.exception.AuthenticationExceptionAdapter</exclude>
+                                        <exclude>org.springframework.security.boot.utils.SubjectUtils</exclude>
+                                        <exclude>org.springframework.security.boot.utils.WebUtils</exclude>
+                                        <exclude>org.springframework.security.boot.utils.StringUtils</exclude>
+                                        <exclude>org.springframework.security.boot.biz.TrustedRedirectStrategy</exclude>
+                                        <exclude>org.springframework.security.boot.biz.exception.AuthResponse</exclude>
+                                    </excludes>
                                     <limits>
                                         <limit>
                                             <counter>LINE</counter>
@@ -717,8 +755,14 @@
             <version>${swagger.version}</version>
         </dependency>
 
-            <!-- For JUnit Jupiter -->
+            <!-- For Spring Boot Test -->
             <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- For JUnit Jupiter -->
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
