@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * Tests for token classes, filter classes, and session-related classes.
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 class TokensAndFiltersTest {
 

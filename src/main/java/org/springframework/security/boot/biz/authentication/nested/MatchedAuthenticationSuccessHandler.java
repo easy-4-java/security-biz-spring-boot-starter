@@ -25,13 +25,13 @@ import java.io.IOException;
 
 /**
  * TODO
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public interface MatchedAuthenticationSuccessHandler {
 
 	/**
 	 * Whether it is supported
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param authentication  the authentication
 	 * @return true or false
 	 */

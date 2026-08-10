@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * Tests for handlers, nested handlers, and authentication listeners.
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 class HandlersAndNestedTest {
 

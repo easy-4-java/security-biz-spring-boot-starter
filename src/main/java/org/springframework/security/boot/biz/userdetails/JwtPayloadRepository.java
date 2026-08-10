@@ -23,13 +23,13 @@ import java.util.Map;
 
 /**
  * Abstract JSON Web Token (JWT) Payload Repository
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public interface JwtPayloadRepository {
 
 	/**
 	 * Issue Jwt
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param token Authentication Token
 	 * @return Jwt String
 	 */
@@ -51,7 +51,7 @@ public interface JwtPayloadRepository {
 
 	/**
 	 * Check JWT 
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param token Authentication Token
 	 * @param checkExpiry Whether Check JWT expiration time
 	 * @return Effective or not
@@ -67,7 +67,7 @@ public interface JwtPayloadRepository {
 
 	/**
 	 * Parser JWT 
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param token Authentication Token
 	 * @param checkExpiry Whether Check JWT expiration time
 	 * @return Jwt Payload
@@ -82,7 +82,7 @@ public interface JwtPayloadRepository {
 	
 	/**
 	 * Parser JWT 
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param token Authentication Token
 	 * @param checkExpiry Whether Check JWT expiration time
 	 * @return Jwt Payload

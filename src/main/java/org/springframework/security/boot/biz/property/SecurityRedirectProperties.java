@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * Security Redirect Properties
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 @Getter
 @Setter
