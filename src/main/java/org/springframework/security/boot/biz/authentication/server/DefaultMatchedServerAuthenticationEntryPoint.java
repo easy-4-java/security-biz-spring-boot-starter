@@ -21,7 +21,7 @@ import org.springframework.security.core.AuthenticationException;
 
 /**
  * Default Matched Authentication Entry Point
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class DefaultMatchedServerAuthenticationEntryPoint implements MatchedServerAuthenticationEntryPoint {
 

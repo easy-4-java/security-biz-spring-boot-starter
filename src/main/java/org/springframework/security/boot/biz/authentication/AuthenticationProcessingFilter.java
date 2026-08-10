@@ -24,7 +24,7 @@ import java.util.Objects;
  * with common HTTP header handling (uid / sign / location / app metadata)
  * used by the feature-specific authentication filters in downstream starters.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public abstract class AuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
