@@ -22,7 +22,7 @@ import org.springframework.web.util.WebUtils;
 
 /**
  * Authenticating Failure Counter On Session 
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class AuthenticatingFailureSessionCounter implements AuthenticatingFailureCounter {
 

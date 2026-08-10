@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  * Post Request Authentication Entry Point
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 

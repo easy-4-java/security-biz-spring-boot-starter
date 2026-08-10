@@ -20,7 +20,7 @@ import java.io.IOException;
 
 /**
  * PostOnly Authentication Processing Filter
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public abstract class PostOnlyAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
 

@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
  * wiring while inheriting the common configuration helpers.</p>
  *
  * @see WebSecurityCustomizer
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomizer, ApplicationContextAware {
