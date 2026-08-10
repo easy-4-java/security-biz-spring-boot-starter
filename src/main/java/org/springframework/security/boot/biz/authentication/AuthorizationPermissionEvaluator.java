@@ -30,7 +30,7 @@ import java.util.Collection;
  * authorities matches the requested permission (case-insensitive equality with
  * {@code "*"} grants access to everything).
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class AuthorizationPermissionEvaluator implements PermissionEvaluator {

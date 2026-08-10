@@ -40,7 +40,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
  *   <li>{@code spring.security.session.remember} / {@code .logout} — nested remember-me and logout sub-properties</li>
  * </ul>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @ConfigurationProperties(SecuritySessionMgtProperties.PREFIX)

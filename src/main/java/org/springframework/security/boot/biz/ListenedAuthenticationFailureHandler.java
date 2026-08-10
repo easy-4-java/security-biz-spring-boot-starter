@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 认证请求失败后的处理实现
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class ListenedAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	
