@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 
 /**
  * Netease Url Authentication Success Handler
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class NeteaseUrlAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 

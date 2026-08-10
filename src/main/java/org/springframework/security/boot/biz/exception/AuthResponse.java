@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Auth response for interacting with client.
  * 
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class AuthResponse<T> {
 
