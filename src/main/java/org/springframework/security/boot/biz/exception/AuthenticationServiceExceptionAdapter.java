@@ -4,7 +4,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 
 /**
  *  认证服务端异常
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 @SuppressWarnings("serial")
 public abstract class AuthenticationServiceExceptionAdapter extends AuthenticationServiceException {

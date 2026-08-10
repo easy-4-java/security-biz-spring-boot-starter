@@ -6,7 +6,7 @@ import org.springframework.security.core.AuthenticationException;
 
 /**
  * Post认证请求失败后的处理实现
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class DefaultMatchedAuthenticationFailureHandler  implements MatchedAuthenticationFailureHandler {
 

@@ -42,7 +42,7 @@ import java.util.Objects;
  * remember-me, session registry and session-authentication strategy) built from
  * the bound {@link SecurityAuthcProperties}.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityCustomizerAdapter {
