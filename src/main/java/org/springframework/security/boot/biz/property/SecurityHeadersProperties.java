@@ -22,7 +22,7 @@ import org.springframework.security.boot.biz.property.header.*;
 
 /**
  * Security Headers Properties
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 @Getter
 @Setter

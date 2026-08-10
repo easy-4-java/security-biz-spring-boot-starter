@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * Post Request Authentication Failure Handler
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAuthenticationFailureHandler {
 

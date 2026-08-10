@@ -22,7 +22,7 @@ import java.util.Date;
 
 /**
  * Null Captcha Resolver
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class NullCaptchaResolver implements CaptchaResolver {
 

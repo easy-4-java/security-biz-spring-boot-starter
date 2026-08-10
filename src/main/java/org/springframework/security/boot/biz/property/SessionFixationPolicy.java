@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpSession;
 /**
  * Session-fixation protection policy applied when a session authenticates.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public enum SessionFixationPolicy {

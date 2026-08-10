@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * TODO
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public interface MatchedServerAuthenticationFailureHandler {
 
@@ -35,7 +35,7 @@ public interface MatchedServerAuthenticationFailureHandler {
 	
 	/**
 	 * Whether it is supported
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param e  the authentication exception
 	 * @return true or false
 	 */

@@ -30,7 +30,7 @@ import java.io.IOException;
 /**
  * 
  * 账号、密码、验证码认证过滤器
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
