@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Http Params Filter
  * http://blog.csdn.net/jaune161/article/details/78060780
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class HttpParamsFilter implements Filter {
     public static String REQUESTED_URL = "CasRequestedUrl";

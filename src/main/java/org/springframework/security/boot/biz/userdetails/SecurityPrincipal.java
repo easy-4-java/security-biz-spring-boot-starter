@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 @SuppressWarnings("serial")
 public class SecurityPrincipal extends User implements Cloneable {
