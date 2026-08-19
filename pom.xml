@@ -12,11 +12,11 @@
     </parent>
 
     <groupId>io.github.easy4j</groupId>
-    <artifactId>security-biz-spring-boot-starter</artifactId>
+    <artifactId>security-extension-spring-boot-starter</artifactId>
     <version>4.1.x.20260630-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Spring Boot Starter For Spring Security Biz</description>
+    <description>Spring Boot Starter For Spring Security Extension</description>
     <url>https://github.com/easy-4-java/${project.artifactId}</url>
 
     <!-- 开源协议采用 Apache 2.0 协议 -->
@@ -64,7 +64,7 @@
         <fastjson2.version>2.0.53</fastjson2.version>
         <jwt-issuer.version>3.0.x.20260630-SNAPSHOT</jwt-issuer.version>
         <slf4j.version>2.0.18</slf4j.version>
-        <spring-biz.version>3.0.x.20260630-SNAPSHOT</spring-biz.version>
+        <spring-security-extension.version>3.0.x.20260630-SNAPSHOT</spring-security-extension.version>
         <swagger.version>1.6.2</swagger.version>
         <!-- Maven Plugin Dependencies -->
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
@@ -117,11 +117,11 @@
                 <artifactId>jwt-issuer-api</artifactId>
                 <version>${jwt-issuer.version}</version>
             </dependency>
-            <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
+            <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-enhance -->
             <dependency>
                 <groupId>io.github.easy4j</groupId>
                 <artifactId>spring-enhance</artifactId>
-                <version>${spring-biz.version}</version>
+                <version>${spring-security-extension.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -209,7 +209,7 @@
             <artifactId>fastjson2</artifactId>
         </dependency>
 
-        <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
+        <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-enhance -->
         <dependency>
             <groupId>io.github.easy4j</groupId>
             <artifactId>spring-enhance</artifactId>
