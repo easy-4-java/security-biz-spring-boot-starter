@@ -41,8 +41,20 @@ import org.springframework.security.web.savedrequest.RequestCache;
 
 import java.util.List;
 
+/**
+ * <p>Utility methods for Web Security.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class WebSecurityUtils {
 
+	/**
+	 * csrf Token Repository.
+	 *
+	 * @param sessionMgtProperties the session mgt properties
+	 * @return the result
+	 */
 	public static CsrfTokenRepository csrfTokenRepository(SecuritySessionMgtProperties sessionMgtProperties) {
 		// Session 管理器配置参数
 		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
@@ -51,6 +63,14 @@ public class WebSecurityUtils {
 		return new HttpSessionCsrfTokenRepository();
 	}
 	
+	/**
+	 * authentication Entry Point.
+	 *
+	 * @param authcProperties the authc properties
+	 * @param sessionMgtProperties the session mgt properties
+	 * @param entryPoints the entry points
+	 * @return the result
+	 */
 	public static PostRequestAuthenticationEntryPoint authenticationEntryPoint(
 			SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties,
@@ -63,6 +83,15 @@ public class WebSecurityUtils {
 		return entryPoint;
 	}
 	
+	/**
+	 * authentication Failure Handler.
+	 *
+	 * @param authcProperties the authc properties
+	 * @param sessionMgtProperties the session mgt properties
+	 * @param authenticationListeners the authentication listeners
+	 * @param failureHandlers the failure handlers
+	 * @return the result
+	 */
 	public static PostRequestAuthenticationFailureHandler authenticationFailureHandler(
 			SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties,
@@ -82,6 +111,15 @@ public class WebSecurityUtils {
 
 	}
 	
+	/**
+	 * authentication Success Handler.
+	 *
+	 * @param authcProperties the authc properties
+	 * @param sessionMgtProperties the session mgt properties
+	 * @param authenticationListeners the authentication listeners
+	 * @param successHandlers the success handlers
+	 * @return the result
+	 */
 	public static PostRequestAuthenticationSuccessHandler authenticationSuccessHandler(
 			SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties,
@@ -101,6 +139,13 @@ public class WebSecurityUtils {
 		return successHandler;
 	}
 	
+	/**
+	 * request Cache.
+	 *
+	 * @param authcProperties the authc properties
+	 * @param sessionMgtProperties the session mgt properties
+	 * @return the result
+	 */
 	public static RequestCache requestCache(SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties) {
  		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
@@ -109,6 +154,12 @@ public class WebSecurityUtils {
  		return requestCache;
  	}
 	
+	/**
+	 * redirect Strategy.
+	 *
+	 * @param authcProperties the authc properties
+	 * @return the result
+	 */
 	public static RedirectStrategy redirectStrategy(SecurityAuthcProperties authcProperties) {
 		TrustedRedirectStrategy redirectStrategy = new TrustedRedirectStrategy();
 		redirectStrategy.setContextRelative(authcProperties.getRedirect().isContextRelative());
@@ -119,6 +170,12 @@ public class WebSecurityUtils {
 	
 
 	
+	/**
+	 * authenticating Failure Counter.
+	 *
+	 * @param authcProperties the authc properties
+	 * @return the result
+	 */
 	public static AuthenticatingFailureCounter authenticatingFailureCounter(SecurityAuthcProperties authcProperties) {
 		AuthenticatingFailureRequestCounter failureCounter = new AuthenticatingFailureRequestCounter();
 		failureCounter.setRetryTimesKeyParameter(authcProperties.getRetry().getRetryTimesKeyParameter());
@@ -126,10 +183,23 @@ public class WebSecurityUtils {
 	}
 
 	
+	/**
+	 * authentication Failure Forward Handler.
+	 *
+	 * @param forwardUrl the forward url
+	 * @return the result
+	 */
 	public static ForwardAuthenticationFailureHandler authenticationFailureForwardHandler(String forwardUrl) {
 		return new ForwardAuthenticationFailureHandler(forwardUrl);
 	}
 	
+	/**
+	 * authentication Failure Simple URL Handler.
+	 *
+	 * @param authcProperties the authc properties
+	 * @param sessionMgtProperties the session mgt properties
+	 * @return the result
+	 */
 	public static SimpleUrlAuthenticationFailureHandler authenticationFailureSimpleUrlHandler(
 			SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties ) {
@@ -144,15 +214,34 @@ public class WebSecurityUtils {
 		return failureHandler;
 	}
 
+	/**
+	 * authentication Provider.
+	 *
+	 * @param userDetailsService the user details service
+	 * @param passwordEncoder the password encoder
+	 * @return the result
+	 */
 	public static PostRequestAuthenticationProvider authenticationProvider(UserDetailsServiceAdapter userDetailsService,
 			PasswordEncoder passwordEncoder) {
 		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
 	
+	/**
+	 * logout Handler.
+	 *
+	 * @param logoutHandlers the logout handlers
+	 * @return the result
+	 */
 	public static LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
 		return new CompositeLogoutHandler(logoutHandlers);
 	}
 	
+	/**
+	 * logout Success Forward Handler.
+	 *
+	 * @param targetUrl the target url
+	 * @return the result
+	 */
 	public static LogoutSuccessHandler logoutSuccessForwardHandler(String targetUrl) {
 		return new ForwardLogoutSuccessHandler(targetUrl);
 	}

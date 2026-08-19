@@ -20,11 +20,24 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 
 
+/**
+ * <p>Handler for Reactive Server Access Denied.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class ReactiveServerAccessDeniedHandler implements ServerAccessDeniedHandler {
 	
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	
+	/**
+	 * handle.
+	 *
+	 * @param exchange the exchange
+	 * @param denied the denied
+	 * @return the result
+	 */
 	@Override
 	public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
 

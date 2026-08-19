@@ -23,6 +23,7 @@ import org.springframework.security.web.header.writers.ContentSecurityPolicyHead
 /**
  * Header Content Security Policy Properties
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 @Getter
 @Setter

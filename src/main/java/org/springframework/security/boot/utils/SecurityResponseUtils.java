@@ -24,11 +24,26 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+/**
+ * <p>Utility methods for Security Response.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class SecurityResponseUtils {
 
 	protected static Logger logger = LoggerFactory.getLogger(SecurityResponseUtils.class);
 	protected static MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 
+	/**
+	 * handle Success.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param authentication the authentication
+	 * @throws IOException if an error occurs
+	 * @throws ServletException if an error occurs
+	 */
 	public static void handleSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 
@@ -47,6 +62,13 @@ public class SecurityResponseUtils {
 
 	}
 
+	/**
+	 * handle Exception.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param e the e
+	 */
 	public static void handleException(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
 			throws IOException, ServletException {
 

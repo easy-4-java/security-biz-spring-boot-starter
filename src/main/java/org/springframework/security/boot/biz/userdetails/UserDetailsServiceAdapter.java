@@ -25,9 +25,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 /**
  * UserDetailsService Adapter
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public abstract class UserDetailsServiceAdapter implements UserDetailsService, UserDetailsPasswordService, AuthenticationUserDetailsService<Authentication> {
 
+	/**
+	 * load User Details.
+	 *
+	 * @param token the token
+	 * @return the result
+	 * @throws AuthenticationException if an error occurs
+	 */
 	@Override
 	public UserDetails loadUserDetails(Authentication token) throws AuthenticationException {
 		if(token.getPrincipal() instanceof String) {
@@ -36,23 +44,60 @@ public abstract class UserDetailsServiceAdapter implements UserDetailsService, U
 		return null;
 	}
 	
+	/**
+	 * load User Details.
+	 *
+	 * @param userid the userid
+	 * @return the result
+	 * @throws AuthenticationException if an error occurs
+	 */
 	public UserDetails loadUserDetails(String userid) throws AuthenticationException {
 		return null;
 	}
 	
+	/**
+	 * load User Details.
+	 *
+	 * @param userId the user id
+	 * @param roleId the role id
+	 * @return the result
+	 * @throws AuthenticationException if an error occurs
+	 */
 	public UserDetails loadUserDetails(String userId, String roleId) throws AuthenticationException {
 		return null;
 	}
 	
+	/**
+	 * load User Details Without Pwd.
+	 *
+	 * @param username the username
+	 * @return the result
+	 * @throws AuthenticationException if an error occurs
+	 */
 	public UserDetails loadUserDetailsWithoutPwd(String username) throws AuthenticationException {
 		return null;
 	}
 	
+	/**
+	 * update Password.
+	 *
+	 * @param user the user
+	 * @param newPassword the new password
+	 * @return the result
+	 * @throws AuthenticationException if an error occurs
+	 */
 	@Override
 	public UserDetails updatePassword(UserDetails user, String newPassword) throws AuthenticationException {
 		return null;
 	}
 
+	/**
+	 * load User By Username.
+	 *
+	 * @param username the username
+	 * @return the result
+	 * @throws AuthenticationException if an error occurs
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws AuthenticationException {
 		return this.loadUserDetailsWithoutPwd(username);

@@ -19,6 +19,12 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+/**
+ * <p>Token for Abstract Authentication.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 @SuppressWarnings("serial")
 public class AbstractAuthenticationToken extends org.springframework.security.authentication.AbstractAuthenticationToken {
     
@@ -53,12 +59,24 @@ public class AbstractAuthenticationToken extends org.springframework.security.au
 	 */
 	private double latitude;
 
+	    /**
+	     * Constructs a new abstract authentication token instance.
+	     *
+	     * @param principal the principal
+	     */
 	    public AbstractAuthenticationToken(Object principal) {
 	        super((Collection<? extends GrantedAuthority>) null);
         this.principal = principal;
         setAuthenticated(false);
     }
     
+    /**
+     * Constructs a new abstract authentication token instance.
+     *
+     * @param principal the principal
+     * @param credentials the credentials
+     * @param authorities the authorities
+     */
     public AbstractAuthenticationToken( Object principal,  Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
@@ -69,14 +87,30 @@ public class AbstractAuthenticationToken extends org.springframework.security.au
     // ~ Methods
     // ========================================================================================================
 
+    /**
+     * Returns the credentials.
+     *
+     * @return the credentials
+     */
     public Object getCredentials() {
         return this.credentials;
     }
 
+    /**
+     * Returns the principal.
+     *
+     * @return the principal
+     */
     public Object getPrincipal() {
         return this.principal;
     }
 
+    /**
+     * Sets the authenticated.
+     *
+     * @param isAuthenticated the is authenticated
+     * @throws IllegalArgumentException if an error occurs
+     */
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
             throw new IllegalArgumentException(
@@ -86,64 +120,138 @@ public class AbstractAuthenticationToken extends org.springframework.security.au
         super.setAuthenticated(false);
     }
 
+    /**
+     * erase Credentials.
+     *
+     */
     @Override
     public void eraseCredentials() {
         super.eraseCredentials();
         credentials = null;
     }
     
+	/**
+	 * Returns the uid.
+	 *
+	 * @return the uid
+	 */
 	public String getUid() {
 		return uid;
 	}
 
+	/**
+	 * Sets the uid.
+	 *
+	 * @param uid the uid
+	 */
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
 
+	/**
+	 * Returns the app id.
+	 *
+	 * @return the app id
+	 */
 	public String getAppId() {
 		return appId;
 	}
 
+	/**
+	 * Sets the app id.
+	 *
+	 * @param appId the app id
+	 */
 	public void setAppId(String appId) {
 		this.appId = appId;
 	}
 
+	/**
+	 * Returns the app channel.
+	 *
+	 * @return the app channel
+	 */
 	public String getAppChannel() {
 		return appChannel;
 	}
 
+	/**
+	 * Sets the app channel.
+	 *
+	 * @param appChannel the app channel
+	 */
 	public void setAppChannel(String appChannel) {
 		this.appChannel = appChannel;
 	}
 
+	/**
+	 * Returns the app version.
+	 *
+	 * @return the app version
+	 */
 	public String getAppVersion() {
 		return appVersion;
 	}
 
+	/**
+	 * Sets the app version.
+	 *
+	 * @param appVersion the app version
+	 */
 	public void setAppVersion(String appVersion) {
 		this.appVersion = appVersion;
 	}
 
+	/**
+	 * Returns the sign.
+	 *
+	 * @return the sign
+	 */
 	public String getSign() {
 		return sign;
 	}
 
+	/**
+	 * Sets the sign.
+	 *
+	 * @param sign the sign
+	 */
 	public void setSign(String sign) {
 		this.sign = sign;
 	}
 
+	/**
+	 * Returns the longitude.
+	 *
+	 * @return the longitude
+	 */
 	public double getLongitude() {
 		return longitude;
 	}
 
+	/**
+	 * Sets the longitude.
+	 *
+	 * @param longitude the longitude
+	 */
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
+	/**
+	 * Returns the latitude.
+	 *
+	 * @return the latitude
+	 */
 	public double getLatitude() {
 		return latitude;
 	}
 
+	/**
+	 * Sets the latitude.
+	 *
+	 * @param latitude the latitude
+	 */
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}

@@ -24,11 +24,20 @@ import org.springframework.web.util.WebUtils;
 /**
  * Authenticating Failure Counter On Request
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class AuthenticatingFailureRequestCounter implements AuthenticatingFailureCounter {
 
     private String retryTimesKeyParameter = DEFAULT_RETRY_TIMES_KEY_PARAM_NAME;
     
+	/**
+	 * get.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param retryTimesKeyAttribute the retry times key attribute
+	 * @return the result
+	 */
 	@Override
 	public int get(ServletRequest request, ServletResponse response, String retryTimesKeyAttribute) {
 		HttpServletRequest httpRequest = WebUtils.getNativeRequest(request, HttpServletRequest.class);
@@ -39,15 +48,32 @@ public class AuthenticatingFailureRequestCounter implements AuthenticatingFailur
 		return 0;
 	}
 
+	/**
+	 * increment.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param retryTimesKeyAttribute the retry times key attribute
+	 */
 	@Override
 	public void increment(ServletRequest request, ServletResponse response, String retryTimesKeyAttribute) {
 		// 参数方式传递错误次数,后端不进行计数累加
 	}
 
+	/**
+	 * Returns the retry times key parameter.
+	 *
+	 * @return the retry times key parameter
+	 */
 	public String getRetryTimesKeyParameter() {
 		return retryTimesKeyParameter;
 	}
 
+	/**
+	 * Sets the retry times key parameter.
+	 *
+	 * @param retryTimesKeyParameter the retry times key parameter
+	 */
 	public void setRetryTimesKeyParameter(String retryTimesKeyParameter) {
 		this.retryTimesKeyParameter = retryTimesKeyParameter;
 	}

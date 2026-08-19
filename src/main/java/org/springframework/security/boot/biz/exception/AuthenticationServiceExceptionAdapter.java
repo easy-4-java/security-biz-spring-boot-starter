@@ -5,6 +5,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 /**
  *  认证服务端异常
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 @SuppressWarnings("serial")
 public abstract class AuthenticationServiceExceptionAdapter extends AuthenticationServiceException {
@@ -12,34 +13,72 @@ public abstract class AuthenticationServiceExceptionAdapter extends Authenticati
 	private final int code;
 	private final String msgKey;
 	
+	/**
+	 * Constructs a new authentication service exception adapter instance.
+	 *
+	 * @param code the code
+	 * @param msg the msg
+	 */
 	public AuthenticationServiceExceptionAdapter(AuthResponseCode code, String msg) {
 		super(msg);
 		this.code = code.getCode();
 		this.msgKey = code.getMsgKey();
 	}
 
+	/**
+	 * Constructs a new authentication service exception adapter instance.
+	 *
+	 * @param code the code
+	 * @param msg the msg
+	 * @param t the t
+	 */
 	public AuthenticationServiceExceptionAdapter(AuthResponseCode code, String msg, Throwable t) {
 		super(msg, t);
 		this.code = code.getCode();
 		this.msgKey = code.getMsgKey();
 	}
 
+	/**
+	 * Constructs a new authentication service exception adapter instance.
+	 *
+	 * @param code the code
+	 * @param msg the msg
+	 * @param t the t
+	 */
 	public AuthenticationServiceExceptionAdapter(int code, String msg, Throwable t) {
 		super(msg, t);
 		this.code = code;
 		this.msgKey = null;
 	}
 
+	/**
+	 * Constructs a new authentication service exception adapter instance.
+	 *
+	 * @param code the code
+	 * @param msgKey the msg key
+	 * @param msg the msg
+	 * @param t the t
+	 */
 	public AuthenticationServiceExceptionAdapter(int code, String msgKey, String msg, Throwable t) {
 		super(msg, t);
 		this.code = code;
 		this.msgKey = msgKey;
 	}
 
+	/**
+	 * Returns the code.
+	 *
+	 * @return the code
+	 */
 	public int getCode() {
 		return code;
 	}
 
+	/**
+	 * Returns the msg key.
+	 *
+	 * @return the msg key
+	 */
 	public String getMsgKey() {
 		return msgKey;
 	}

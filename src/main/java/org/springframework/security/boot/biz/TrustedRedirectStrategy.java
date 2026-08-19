@@ -12,6 +12,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * <p>Trusted Redirect Strategy.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class TrustedRedirectStrategy extends DefaultRedirectStrategy {
 
     /**
@@ -26,6 +32,14 @@ public class TrustedRedirectStrategy extends DefaultRedirectStrategy {
      */
     private List<String> trustedRedirects = new ArrayList<>(Arrays.asList("/**"));
 
+    /**
+     * send Redirect.
+     *
+     * @param request the request
+     * @param response the response
+     * @param url the url
+     * @throws IOException if an error occurs
+     */
     @Override
     public void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
         if (this.isTrustedTarget(url)) {
@@ -47,10 +61,20 @@ public class TrustedRedirectStrategy extends DefaultRedirectStrategy {
         return false;
     }
 
+    /**
+     * Sets the trusted redirects.
+     *
+     * @param trustedRedirects the trusted redirects
+     */
     public void setTrustedRedirects(List<String> trustedRedirects) {
         this.trustedRedirects = trustedRedirects;
     }
 
+    /**
+     * Sets the default redirect url.
+     *
+     * @param defaultRedirectUrl the default redirect url
+     */
     public void setDefaultRedirectUrl(String defaultRedirectUrl) {
         this.defaultRedirectUrl = defaultRedirectUrl;
     }

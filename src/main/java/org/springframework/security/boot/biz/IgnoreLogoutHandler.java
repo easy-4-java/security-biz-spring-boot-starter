@@ -23,9 +23,17 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 /**
  * TODO
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class IgnoreLogoutHandler implements LogoutHandler {
 
+	/**
+	 * logout.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param authentication the authentication
+	 */
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		

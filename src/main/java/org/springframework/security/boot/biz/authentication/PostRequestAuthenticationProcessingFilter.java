@@ -31,6 +31,7 @@ import java.io.IOException;
  * 
  * 账号、密码、验证码认证过滤器
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
@@ -60,11 +61,22 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 	// ~ Constructors
 	// ===================================================================================================
 	
+	/**
+	 * Constructs a new post request authentication processing filter instance.
+	 *
+	 * @param objectMapper the object mapper
+	 */
 	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper) {
 		super(PathPatternRequestMatcher.pathPattern("/login"));
 		this.objectMapper = objectMapper;
 	}
 
+	/**
+	 * Constructs a new post request authentication processing filter instance.
+	 *
+	 * @param objectMapper the object mapper
+	 * @param requestMatcher the request matcher
+	 */
 	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper, RequestMatcher requestMatcher) {
 		super(requestMatcher);
 		this.objectMapper = objectMapper;
@@ -73,6 +85,13 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 	// ~ Methods
 	// ========================================================================================================
 	
+	/**
+	 * do Attempt Authentication.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @return the result
+	 */
 	@Override
 	public Authentication doAttemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
@@ -165,6 +184,13 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 
 	}
 
+	/**
+	 * authentication Token.
+	 *
+	 * @param username the username
+	 * @param password the password
+	 * @return the result
+	 */
 	protected AbstractAuthenticationToken authenticationToken(String username, String password) {
 		return new UsernamePasswordAuthenticationToken( username, password);
 	}
@@ -264,15 +290,32 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 		this.postOnly = postOnly;
 	}
 
+	/**
+	 * Returns the username parameter.
+	 *
+	 * @return the username parameter
+	 */
 	public final String getUsernameParameter() {
 		return usernameParameter;
 	}
 
+	/**
+	 * Returns the password parameter.
+	 *
+	 * @return the password parameter
+	 */
 	public final String getPasswordParameter() {
 		return passwordParameter;
 	}
 	
 
+	/**
+	 * Determines whether is over retry remind.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @return the result
+	 */
 	protected boolean isOverRetryRemind(ServletRequest request, ServletResponse response) {
 		if (null != getFailureCounter() && getFailureCounter().get(request, response, getRetryTimesKeyAttribute()) == getRetryTimesWhenAccessDenied()) {
 			return true;
@@ -280,6 +323,13 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 		return false;
 	}
 	
+	/**
+	 * Determines whether is over retry times.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @return the result
+	 */
 	protected boolean isOverRetryTimes(ServletRequest request, ServletResponse response) {
 		if (null != getFailureCounter() && getFailureCounter().get(request, response, getRetryTimesKeyAttribute()) >= getRetryTimesWhenAccessDenied()) {
 			return true;
@@ -288,58 +338,128 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 	}
 	
 	
+	/**
+	 * Returns the post only.
+	 *
+	 * @return the post only
+	 */
 	public boolean isPostOnly() {
 		return postOnly;
 	}
 	
+	/**
+	 * Returns the captcha required.
+	 *
+	 * @return the captcha required
+	 */
 	public boolean isCaptchaRequired() {
 		return captchaRequired;
 	}
 
+	/**
+	 * Sets the captcha required.
+	 *
+	 * @param captchaRequired the captcha required
+	 */
 	public void setCaptchaRequired(boolean captchaRequired) {
 		this.captchaRequired = captchaRequired;
 	}
 
+	/**
+	 * Returns the captcha resolver.
+	 *
+	 * @return the captcha resolver
+	 */
 	public CaptchaResolver getCaptchaResolver() {
 		return captchaResolver;
 	}
 
+	/**
+	 * Sets the captcha resolver.
+	 *
+	 * @param captchaResolver the captcha resolver
+	 */
 	public void setCaptchaResolver(CaptchaResolver captchaResolver) {
 		this.captchaResolver = captchaResolver;
 	}
 
+	/**
+	 * Returns the captcha parameter.
+	 *
+	 * @return the captcha parameter
+	 */
 	public String getCaptchaParameter() {
 		return captchaParameter;
 	}
 
+	/**
+	 * Sets the captcha parameter.
+	 *
+	 * @param captchaParameter the captcha parameter
+	 */
 	public void setCaptchaParameter(String captchaParameter) {
 		this.captchaParameter = captchaParameter;
 	}
 
+	/**
+	 * Returns the failure counter.
+	 *
+	 * @return the failure counter
+	 */
 	public AuthenticatingFailureCounter getFailureCounter() {
 		return failureCounter;
 	}
 
+	/**
+	 * Sets the failure counter.
+	 *
+	 * @param failureCounter the failure counter
+	 */
 	public void setFailureCounter(AuthenticatingFailureCounter failureCounter) {
 		this.failureCounter = failureCounter;
 	}
 	
+	/**
+	 * Returns the retry times key attribute.
+	 *
+	 * @return the retry times key attribute
+	 */
 	public String getRetryTimesKeyAttribute() {
 		return retryTimesKeyAttribute;
 	}
 
+	/**
+	 * Sets the retry times key attribute.
+	 *
+	 * @param retryTimesKeyAttribute the retry times key attribute
+	 */
 	public void setRetryTimesKeyAttribute(String retryTimesKeyAttribute) {
 		this.retryTimesKeyAttribute = retryTimesKeyAttribute;
 	}
 
+	/**
+	 * Returns the retry times when access denied.
+	 *
+	 * @return the retry times when access denied
+	 */
 	public int getRetryTimesWhenAccessDenied() {
 		return retryTimesWhenAccessDenied;
 	}
 
+	/**
+	 * Sets the retry times when access denied.
+	 *
+	 * @param retryTimesWhenAccessDenied the retry times when access denied
+	 */
 	public void setRetryTimesWhenAccessDenied(int retryTimesWhenAccessDenied) {
 		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
 	}
 
+	/**
+	 * Returns the object mapper.
+	 *
+	 * @return the object mapper
+	 */
 	public ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}

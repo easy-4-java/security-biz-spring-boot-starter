@@ -12,9 +12,14 @@ import java.util.Arrays;
  * @author vladimir.stankovic
  *
  * Aug 3, 2016
+ * @since 1.0.0
  */
 public class CustomCorsFilter extends CorsFilter {
 
+    /**
+     * Constructs a new custom cors filter instance.
+     *
+     */
     public CustomCorsFilter() {
         super(configurationSource());
     }

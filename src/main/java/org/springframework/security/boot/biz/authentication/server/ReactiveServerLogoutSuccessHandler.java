@@ -17,11 +17,24 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * <p>Handler for Reactive Server Logout Success.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 @Slf4j
 public class ReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHandler {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	
+	/**
+	 * on Logout Success.
+	 *
+	 * @param exchange the exchange
+	 * @param authentication the authentication
+	 * @return the result
+	 */
 	@Override
 	public Mono<Void> onLogoutSuccess(WebFilterExchange exchange, Authentication authentication) {
 		

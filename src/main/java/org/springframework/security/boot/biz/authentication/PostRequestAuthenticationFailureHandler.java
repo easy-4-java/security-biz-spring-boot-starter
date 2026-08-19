@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * Post Request Authentication Failure Handler
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAuthenticationFailureHandler {
 
@@ -26,16 +27,36 @@ public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAut
 	private List<MatchedAuthenticationFailureHandler> failureHandlers;
 	private boolean stateless = false;
 	
+	/**
+	 * Constructs a new post request authentication failure handler instance.
+	 *
+	 * @param failureHandlers the failure handlers
+	 */
 	public PostRequestAuthenticationFailureHandler(List<MatchedAuthenticationFailureHandler> failureHandlers) {
 		this.setFailureHandlers(failureHandlers);
 	}
 
+	/**
+	 * Constructs a new post request authentication failure handler instance.
+	 *
+	 * @param authenticationListeners the authentication listeners
+	 * @param failureHandlers the failure handlers
+	 */
 	public PostRequestAuthenticationFailureHandler(List<AuthenticationListener> authenticationListeners,
 			List<MatchedAuthenticationFailureHandler> failureHandlers) {
 		this.setAuthenticationListeners(authenticationListeners);
 		this.setFailureHandlers(failureHandlers);
 	}
 
+	/**
+	 * on Authentication Failure.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param e the e
+	 * @throws IOException if an error occurs
+	 * @throws ServletException if an error occurs
+	 */
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException e) throws IOException, ServletException {
@@ -78,26 +99,56 @@ public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAut
 	}
  
 	
+	/**
+	 * Returns the authentication listeners.
+	 *
+	 * @return the authentication listeners
+	 */
 	public List<AuthenticationListener> getAuthenticationListeners() {
 		return authenticationListeners;
 	}
 
+	/**
+	 * Sets the authentication listeners.
+	 *
+	 * @param authenticationListeners the authentication listeners
+	 */
 	public void setAuthenticationListeners(List<AuthenticationListener> authenticationListeners) {
 		this.authenticationListeners = authenticationListeners;
 	}
 
+	/**
+	 * Returns the failure handlers.
+	 *
+	 * @return the failure handlers
+	 */
 	public List<MatchedAuthenticationFailureHandler> getFailureHandlers() {
 		return failureHandlers;
 	}
 
+	/**
+	 * Sets the failure handlers.
+	 *
+	 * @param failureHandlers the failure handlers
+	 */
 	public void setFailureHandlers(List<MatchedAuthenticationFailureHandler> failureHandlers) {
 		this.failureHandlers = failureHandlers;
 	}
 
+	/**
+	 * Returns the stateless.
+	 *
+	 * @return the stateless
+	 */
 	public boolean isStateless() {
 		return stateless;
 	}
 
+	/**
+	 * Sets the stateless.
+	 *
+	 * @param stateless the stateless
+	 */
 	public void setStateless(boolean stateless) {
 		this.stateless = stateless;
 	}

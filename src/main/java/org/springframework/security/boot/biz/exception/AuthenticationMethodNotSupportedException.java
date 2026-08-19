@@ -3,6 +3,7 @@ package org.springframework.security.boot.biz.exception;
 /**
  * Authentication Method Not Supported Exception
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 @SuppressWarnings("serial")
 public class AuthenticationMethodNotSupportedException extends AuthenticationExceptionAdapter {

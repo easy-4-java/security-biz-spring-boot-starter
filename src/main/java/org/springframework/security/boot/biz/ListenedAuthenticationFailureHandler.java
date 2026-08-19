@@ -13,20 +13,41 @@ import java.util.List;
 /**
  * 认证请求失败后的处理实现
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class ListenedAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	
 	private List<AuthenticationListener> authenticationListeners;
 	
+	/**
+	 * Constructs a new listened authentication failure handler instance.
+	 *
+	 * @param defaultFailureUrl the default failure url
+	 */
 	public ListenedAuthenticationFailureHandler(String defaultFailureUrl) {
 		this.setDefaultFailureUrl(defaultFailureUrl);
 	}
 	
+	/**
+	 * Constructs a new listened authentication failure handler instance.
+	 *
+	 * @param authenticationListeners the authentication listeners
+	 * @param defaultFailureUrl the default failure url
+	 */
 	public ListenedAuthenticationFailureHandler(List<AuthenticationListener> authenticationListeners, String defaultFailureUrl) {
 		this.setAuthenticationListeners(authenticationListeners);
 		this.setDefaultFailureUrl(defaultFailureUrl);
 	}
 	
+	/**
+	 * on Authentication Failure.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param e the e
+	 * @throws IOException if an error occurs
+	 * @throws ServletException if an error occurs
+	 */
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException e) throws IOException, ServletException {
@@ -42,10 +63,20 @@ public class ListenedAuthenticationFailureHandler extends SimpleUrlAuthenticatio
 		
 	}
 	
+	/**
+	 * Returns the authentication listeners.
+	 *
+	 * @return the authentication listeners
+	 */
 	public List<AuthenticationListener> getAuthenticationListeners() {
 		return authenticationListeners;
 	}
 
+	/**
+	 * Sets the authentication listeners.
+	 *
+	 * @param authenticationListeners the authentication listeners
+	 */
 	public void setAuthenticationListeners(List<AuthenticationListener> authenticationListeners) {
 		this.authenticationListeners = authenticationListeners;
 	}

@@ -4,6 +4,7 @@ package org.springframework.security.boot.biz.exception;
  * Enumeration of response code.
  * 
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public enum AuthResponseCode {
 
@@ -145,14 +146,29 @@ public enum AuthResponseCode {
 		this.msgKey = msgKey;
 	}
 
+	/**
+	 * Returns the code.
+	 *
+	 * @return the code
+	 */
 	public int getCode() {
 		return code;
 	}
 
+	/**
+	 * Returns the status.
+	 *
+	 * @return the status
+	 */
 	public String getStatus() {
 		return status;
 	}
 
+	/**
+	 * Returns the msg key.
+	 *
+	 * @return the msg key
+	 */
 	public String getMsgKey() {
 		return msgKey;
 	}

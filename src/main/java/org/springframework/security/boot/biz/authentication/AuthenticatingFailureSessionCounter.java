@@ -23,9 +23,18 @@ import org.springframework.web.util.WebUtils;
 /**
  * Authenticating Failure Counter On Session 
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class AuthenticatingFailureSessionCounter implements AuthenticatingFailureCounter {
 
+	/**
+	 * get.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param retryTimesKeyAttribute the retry times key attribute
+	 * @return the result
+	 */
 	@Override
 	public int get(ServletRequest request, ServletResponse response, String retryTimesKeyAttribute) {
 		HttpServletRequest httpRequest = WebUtils.getNativeRequest(request, HttpServletRequest.class);
@@ -36,6 +45,13 @@ public class AuthenticatingFailureSessionCounter implements AuthenticatingFailur
 		return 0;
 	}
 
+	/**
+	 * increment.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param retryTimesKeyAttribute the retry times key attribute
+	 */
 	@Override
 	public void increment(ServletRequest request, ServletResponse response, String retryTimesKeyAttribute) {
 		HttpServletRequest httpRequest = WebUtils.getNativeRequest(request, HttpServletRequest.class);

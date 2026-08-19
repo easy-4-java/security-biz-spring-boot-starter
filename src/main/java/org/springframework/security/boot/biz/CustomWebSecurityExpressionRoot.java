@@ -9,17 +9,35 @@ import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
 import java.util.Objects;
 
+/**
+ * <p>Custom Web Security Expression Root.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CustomWebSecurityExpressionRoot  extends WebSecurityExpressionRoot {
 
     // private FilterInvocation filterInvocation;
     /** Allows direct access to the request object */
     public final HttpServletRequest request;
 
+    /**
+     * Constructs a new custom web security expression root instance.
+     *
+     * @param a the a
+     * @param fi the fi
+     */
     public CustomWebSecurityExpressionRoot(Authentication a, FilterInvocation fi) {
         super(a, fi);
         this.request = fi.getRequest();
     }
 
+    /**
+     * Constructs a new custom web security expression root instance.
+     *
+     * @param authentication the authentication
+     * @param context the context
+     */
     public CustomWebSecurityExpressionRoot(Authentication authentication, RequestAuthorizationContext context) {
         super(() -> authentication, context);
         this.request = context.getRequest();

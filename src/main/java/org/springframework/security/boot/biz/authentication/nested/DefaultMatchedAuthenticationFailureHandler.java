@@ -7,9 +7,16 @@ import org.springframework.security.core.AuthenticationException;
 /**
  * Post认证请求失败后的处理实现
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class DefaultMatchedAuthenticationFailureHandler  implements MatchedAuthenticationFailureHandler {
 
+	/**
+	 * Determines whether supports.
+	 *
+	 * @param e the e
+	 * @return the result
+	 */
 	@Override
 	public boolean supports(AuthenticationException e) {
 		return SubjectUtils.isAssignableFrom(e.getClass(), AuthenticationMethodNotSupportedException.class,

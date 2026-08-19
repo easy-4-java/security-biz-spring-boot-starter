@@ -25,6 +25,7 @@ import java.util.Date;
 /**
  * Captcha Resolver From Session 
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class SessionCaptchaResolver implements CaptchaResolver {
 
@@ -38,6 +39,13 @@ public class SessionCaptchaResolver implements CaptchaResolver {
 	private String sessionKeyValue = KAPTCHA_SESSION_ATTRIBUTE_NAME;
 	private String sessionKeyDateValue = KAPTCHA_DATE_SESSION_ATTRIBUTE_NAME;
 	
+	/**
+	 * Determines whether valid captcha.
+	 *
+	 * @param request the request
+	 * @param capText the cap text
+	 * @return the result
+	 */
 	@Override
 	public boolean validCaptcha(HttpServletRequest request, String capText) {
 		if(StringUtils.isEmpty(capText)){
@@ -51,6 +59,14 @@ public class SessionCaptchaResolver implements CaptchaResolver {
 		return false;
 	}
 
+	/**
+	 * set Captcha.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param capText the cap text
+	 * @param capDate the cap date
+	 */
 	@Override
 	public void setCaptcha(HttpServletRequest request, HttpServletResponse response, String capText, Date capDate) {
 		

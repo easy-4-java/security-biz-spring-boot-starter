@@ -17,6 +17,12 @@ package org.springframework.security.boot.biz.session;
 
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
+/**
+ * <p>Interface defining handler operations for Session Authentication Failure.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public interface SessionAuthenticationFailureHandler extends AuthenticationFailureHandler {
 
 }

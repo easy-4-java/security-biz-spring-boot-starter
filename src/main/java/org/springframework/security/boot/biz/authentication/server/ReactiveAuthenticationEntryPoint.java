@@ -33,6 +33,7 @@ import java.util.List;
 /**
  * Post Request Authentication Entry Point
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class ReactiveAuthenticationEntryPoint implements ServerAuthenticationEntryPoint {
 
@@ -40,10 +41,22 @@ public class ReactiveAuthenticationEntryPoint implements ServerAuthenticationEnt
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	private List<MatchedServerAuthenticationEntryPoint> entryPoints;
 	
+	/**
+	 * Constructs a new reactive authentication entry point instance.
+	 *
+	 * @param entryPoints the entry points
+	 */
 	public ReactiveAuthenticationEntryPoint(List<MatchedServerAuthenticationEntryPoint> entryPoints) {
 		this.setEntryPoints(entryPoints);
 	}
 
+	/**
+	 * commence.
+	 *
+	 * @param exchange the exchange
+	 * @param e the e
+	 * @return the result
+	 */
 	@Override
 	public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException e) {
 		
@@ -73,18 +86,38 @@ public class ReactiveAuthenticationEntryPoint implements ServerAuthenticationEnt
     }
      
 
+	/**
+	 * Returns the messages.
+	 *
+	 * @return the messages
+	 */
 	public MessageSourceAccessor getMessages() {
 		return messages;
 	}
 
+	/**
+	 * Returns the entry points.
+	 *
+	 * @return the entry points
+	 */
 	public List<MatchedServerAuthenticationEntryPoint> getEntryPoints() {
 		return entryPoints;
 	}
 
+	/**
+	 * Sets the messages.
+	 *
+	 * @param messages the messages
+	 */
 	public void setMessages(MessageSourceAccessor messages) {
 		this.messages = messages;
 	}
 
+	/**
+	 * Sets the entry points.
+	 *
+	 * @param entryPoints the entry points
+	 */
 	public void setEntryPoints(List<MatchedServerAuthenticationEntryPoint> entryPoints) {
 		this.entryPoints = entryPoints;
 	}

@@ -8,11 +8,24 @@ import org.springframework.security.web.access.expression.DefaultHttpSecurityExp
 import org.springframework.security.web.access.expression.WebSecurityExpressionRoot;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 
+/**
+ * <p>Handler for Custom Web Security Expression.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CustomWebSecurityExpressionHandler extends DefaultHttpSecurityExpressionHandler {
 
     private AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
     private String defaultRolePrefix = "ROLE_";
 
+    /**
+     * create Security Expression Root.
+     *
+     * @param authentication the authentication
+     * @param context the context
+     * @return the result
+     */
     @Override
     protected SecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication,
                                                                          RequestAuthorizationContext context) {
@@ -24,12 +37,22 @@ public class CustomWebSecurityExpressionHandler extends DefaultHttpSecurityExpre
         return root;
     }
 
+    /**
+     * Sets the trust resolver.
+     *
+     * @param trustResolver the trust resolver
+     */
     @Override
     public void setTrustResolver(AuthenticationTrustResolver trustResolver){
         super.setTrustResolver(trustResolver);
         this.trustResolver = trustResolver;
     }
 
+    /**
+     * Sets the default role prefix.
+     *
+     * @param defaultRolePrefix the default role prefix
+     */
     @Override
     public void setDefaultRolePrefix(String defaultRolePrefix) {
         super.setDefaultRolePrefix(defaultRolePrefix);

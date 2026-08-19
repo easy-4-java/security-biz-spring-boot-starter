@@ -33,6 +33,7 @@ import java.util.List;
 /**
  * Post Request Authentication Entry Point
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
@@ -40,11 +41,24 @@ public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationE
 	private List<MatchedAuthenticationEntryPoint> entryPoints;
 	private boolean stateless = false;
 	
+	/**
+	 * Constructs a new post request authentication entry point instance.
+	 *
+	 * @param loginFormUrl the login form url
+	 * @param entryPoints the entry points
+	 */
 	public PostRequestAuthenticationEntryPoint(String loginFormUrl, List<MatchedAuthenticationEntryPoint> entryPoints) {
 		super(loginFormUrl);
 		this.entryPoints = entryPoints;
 	}
 
+	/**
+	 * commence.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param e the e
+	 */
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
 			throws IOException, ServletException {
@@ -78,18 +92,38 @@ public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationE
 	}
  
 
+	/**
+	 * Returns the entry points.
+	 *
+	 * @return the entry points
+	 */
 	public List<MatchedAuthenticationEntryPoint> getEntryPoints() {
 		return entryPoints;
 	}
 
+	/**
+	 * Returns the stateless.
+	 *
+	 * @return the stateless
+	 */
 	public boolean isStateless() {
 		return stateless;
 	}
 
+	/**
+	 * Sets the entry points.
+	 *
+	 * @param entryPoints the entry points
+	 */
 	public void setEntryPoints(List<MatchedAuthenticationEntryPoint> entryPoints) {
 		this.entryPoints = entryPoints;
 	}
 
+	/**
+	 * Sets the stateless.
+	 *
+	 * @param stateless the stateless
+	 */
 	public void setStateless(boolean stateless) {
 		this.stateless = stateless;
 	}

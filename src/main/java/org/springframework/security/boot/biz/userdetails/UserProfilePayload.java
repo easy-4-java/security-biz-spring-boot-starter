@@ -22,6 +22,12 @@ import lombok.Data;
 
 import java.util.*;
 
+/**
+ * <p>User Profile Payload.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 @ApiModel(value = "UserProfilePayload", description = "用户信息载体对象")
 @Data
 public class UserProfilePayload {

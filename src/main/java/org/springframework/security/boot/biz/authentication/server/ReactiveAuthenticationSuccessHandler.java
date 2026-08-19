@@ -26,14 +26,32 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+/**
+ * <p>Handler for Reactive Authentication Success.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class ReactiveAuthenticationSuccessHandler implements ServerAuthenticationSuccessHandler {
 
 	private List<MatchedServerAuthenticationSuccessHandler> successHandlers;
 	
+	/**
+	 * Constructs a new reactive authentication success handler instance.
+	 *
+	 * @param successHandlers the success handlers
+	 */
 	public ReactiveAuthenticationSuccessHandler(List<MatchedServerAuthenticationSuccessHandler> successHandlers) {
 		this.setSuccessHandlers(successHandlers);
 	}
 	
+    /**
+     * on Authentication Success.
+     *
+     * @param webFilterExchange the web filter exchange
+     * @param authentication the authentication
+     * @return the result
+     */
 	@Override
     public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
        
@@ -68,10 +86,20 @@ public class ReactiveAuthenticationSuccessHandler implements ServerAuthenticatio
 	
 
 
+	/**
+	 * Returns the success handlers.
+	 *
+	 * @return the success handlers
+	 */
 	public List<MatchedServerAuthenticationSuccessHandler> getSuccessHandlers() {
 		return successHandlers;
 	}
 
+	/**
+	 * Sets the success handlers.
+	 *
+	 * @param successHandlers the success handlers
+	 */
 	public void setSuccessHandlers(List<MatchedServerAuthenticationSuccessHandler> successHandlers) {
 		this.successHandlers = successHandlers;
 	}

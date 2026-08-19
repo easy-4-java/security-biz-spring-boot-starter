@@ -20,6 +20,7 @@ import lombok.Data;
 /**
  * Security RememberMe Properties
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 @Data
 public class SecurityRememberMeProperties {

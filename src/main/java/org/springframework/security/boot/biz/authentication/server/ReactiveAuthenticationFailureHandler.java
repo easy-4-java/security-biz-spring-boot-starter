@@ -26,14 +26,32 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+/**
+ * <p>Handler for Reactive Authentication Failure.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class ReactiveAuthenticationFailureHandler implements ServerAuthenticationFailureHandler {
 
 	private List<MatchedServerAuthenticationFailureHandler> failureHandlers;
 	
+	/**
+	 * Constructs a new reactive authentication failure handler instance.
+	 *
+	 * @param failureHandlers the failure handlers
+	 */
 	public ReactiveAuthenticationFailureHandler(List<MatchedServerAuthenticationFailureHandler> failureHandlers) {
 		this.setFailureHandlers(failureHandlers);
 	}
 	
+    /**
+     * on Authentication Failure.
+     *
+     * @param webFilterExchange the web filter exchange
+     * @param e the e
+     * @return the result
+     */
     @Override
     public Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException e) {
     	
@@ -62,10 +80,20 @@ public class ReactiveAuthenticationFailureHandler implements ServerAuthenticatio
 		return Mono.empty();
     }
     
+	/**
+	 * Returns the failure handlers.
+	 *
+	 * @return the failure handlers
+	 */
 	public List<MatchedServerAuthenticationFailureHandler> getFailureHandlers() {
 		return failureHandlers;
 	}
 
+	/**
+	 * Sets the failure handlers.
+	 *
+	 * @param failureHandlers the failure handlers
+	 */
 	public void setFailureHandlers(List<MatchedServerAuthenticationFailureHandler> failureHandlers) {
 		this.failureHandlers = failureHandlers;
 	}

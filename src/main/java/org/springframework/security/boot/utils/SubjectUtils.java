@@ -24,6 +24,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 /**
  * Subject Utils
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 @SuppressWarnings("unchecked")
 public class SubjectUtils {
@@ -35,14 +36,30 @@ public class SubjectUtils {
 		return member instanceof Long ? (Long) member : new BigDecimal(member.toString()).longValue();
 	};
 
+	/**
+	 * Returns the security context.
+	 *
+	 * @return the security context
+	 */
 	public static SecurityContext getSecurityContext(){
 		return SecurityContextHolder.getContext();
 	}
 
+	/**
+	 * Returns the authentication.
+	 *
+	 * @return the authentication
+	 */
 	public static Authentication getAuthentication(){
 		return getSecurityContext().getAuthentication();
 	}
 
+	/**
+	 * get Principal.
+	 *
+	 * @param clazz the clazz
+	 * @return the result
+	 */
 	public static <T> T getPrincipal(Class<T> clazz){
 		Object principal = getAuthentication().getPrincipal();
 		// 自身类.class.isAssignableFrom(自身类或子类.class)
@@ -52,6 +69,13 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * get Principal.
+	 *
+	 * @param authentication the authentication
+	 * @param clazz the clazz
+	 * @return the result
+	 */
 	public static <T> T getPrincipal(Authentication authentication, Class<T> clazz){
 		Object principal = authentication.getPrincipal();
 		// 自身类.class.isAssignableFrom(自身类或子类.class)
@@ -61,11 +85,21 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * Returns the principal.
+	 *
+	 * @return the principal
+	 */
 	public static Object getPrincipal(){
 		Authentication authentication = getAuthentication();
 		return authentication == null ? null : authentication.getPrincipal();
 	}
 
+	/**
+	 * Returns the user id.
+	 *
+	 * @return the user id
+	 */
 	public static String getUserId() {
 		if(isAuthenticated()){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal(SecurityPrincipal.class);
@@ -74,6 +108,11 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * Returns the user id long.
+	 *
+	 * @return the user id long
+	 */
 	public static Long getUserIdLong() {
 		if(isAuthenticated()){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal(SecurityPrincipal.class);
@@ -82,10 +121,23 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * get Profile String.
+	 *
+	 * @param key the key
+	 * @return the result
+	 */
 	public static String getProfileString(String key) {
 		return getProfileString(key, EMPTY);
 	}
 
+	/**
+	 * get Profile String.
+	 *
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * @return the result
+	 */
 	public static String getProfileString(String key, String defaultValue) {
 		if(isAuthenticated()){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
@@ -94,10 +146,25 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * get Profile String.
+	 *
+	 * @param authentication the authentication
+	 * @param key the key
+	 * @return the result
+	 */
 	public static String getProfileString(Authentication authentication, String key) {
 		return getProfileString(authentication, key, null);
 	}
 
+	/**
+	 * get Profile String.
+	 *
+	 * @param authentication the authentication
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * @return the result
+	 */
 	public static String getProfileString(Authentication authentication, String key, String defaultValue) {
 		if(isAuthenticated(authentication)){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
@@ -106,10 +173,23 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * get Profile Integer.
+	 *
+	 * @param key the key
+	 * @return the result
+	 */
 	public static Integer getProfileInteger(String key) {
 		return getProfileInteger(key, null);
 	}
 
+	/**
+	 * get Profile Integer.
+	 *
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * @return the result
+	 */
 	public static Integer getProfileInteger(String key, Integer defaultValue) {
 		if(isAuthenticated()){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
@@ -118,10 +198,25 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * get Profile Integer.
+	 *
+	 * @param authentication the authentication
+	 * @param key the key
+	 * @return the result
+	 */
 	public static Integer getProfileInteger(Authentication authentication, String key) {
 		return getProfileInteger(authentication, key, null);
 	}
 
+	/**
+	 * get Profile Integer.
+	 *
+	 * @param authentication the authentication
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * @return the result
+	 */
 	public static Integer getProfileInteger(Authentication authentication, String key, Integer defaultValue) {
 		if(isAuthenticated(authentication)){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
@@ -130,10 +225,23 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * get Profile Long.
+	 *
+	 * @param key the key
+	 * @return the result
+	 */
 	public static Long getProfileLong(String key) {
 		return getProfileLong(key, null);
 	}
 
+	/**
+	 * get Profile Long.
+	 *
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * @return the result
+	 */
 	public static Long getProfileLong(String key, Long defaultValue) {
 		if(isAuthenticated()){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
@@ -142,10 +250,25 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * get Profile Long.
+	 *
+	 * @param authentication the authentication
+	 * @param key the key
+	 * @return the result
+	 */
 	public static Long getProfileLong(Authentication authentication, String key) {
 		return getProfileLong(authentication, key, null);
 	}
 
+	/**
+	 * get Profile Long.
+	 *
+	 * @param authentication the authentication
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * @return the result
+	 */
 	public static Long getProfileLong(Authentication authentication, String key, Long defaultValue) {
 		if(isAuthenticated(authentication)){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
@@ -154,10 +277,23 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * get Profile Double.
+	 *
+	 * @param key the key
+	 * @return the result
+	 */
 	public static Double getProfileDouble(String key) {
 		return getProfileDouble(key, null);
 	}
 
+	/**
+	 * get Profile Double.
+	 *
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * @return the result
+	 */
 	public static Double getProfileDouble(String key, Double defaultValue) {
 		if(isAuthenticated()){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
@@ -166,10 +302,25 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * get Profile Double.
+	 *
+	 * @param authentication the authentication
+	 * @param key the key
+	 * @return the result
+	 */
 	public static Double getProfileDouble(Authentication authentication, String key) {
 		return getProfileDouble(authentication, key, null);
 	}
 
+	/**
+	 * get Profile Double.
+	 *
+	 * @param authentication the authentication
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * @return the result
+	 */
 	public static Double getProfileDouble(Authentication authentication, String key, Double defaultValue) {
 		if(isAuthenticated(authentication)){
 			SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
@@ -178,27 +329,59 @@ public class SubjectUtils {
 		return null;
 	}
 
+	/**
+	 * Returns the authenticated.
+	 *
+	 * @return the authenticated
+	 */
 	public static boolean isAuthenticated(){
 		Authentication authentication = getAuthentication();
 		return isAuthenticated(authentication);
 	}
 
+	/**
+	 * Determines whether is authenticated.
+	 *
+	 * @param authentication the authentication
+	 * @return the result
+	 */
 	public static boolean isAuthenticated(Authentication authentication){
 		return authentication == null ? false : authentication.isAuthenticated();
 	}
 
+	/**
+	 * Returns the request attributes.
+	 *
+	 * @return the request attributes
+	 */
 	public static ServletRequestAttributes getRequestAttributes() {
 		return (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 	}
 
+	/**
+	 * Returns the request.
+	 *
+	 * @return the request
+	 */
 	public static HttpServletRequest getRequest() {
 		return getRequestAttributes().getRequest();
 	}
 
+	/**
+	 * Returns the response.
+	 *
+	 * @return the response
+	 */
 	public static HttpServletResponse getResponse() {
 		return ((ServletWebRequest)RequestContextHolder.getRequestAttributes()).getResponse();
 	}
 
+	/**
+	 * get Session.
+	 *
+	 * @param create the create
+	 * @return the result
+	 */
 	public static HttpSession getSession(boolean create){
 		return getRequest().getSession(create);
 	}

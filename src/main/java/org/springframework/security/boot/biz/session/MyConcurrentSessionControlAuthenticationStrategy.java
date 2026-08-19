@@ -31,6 +31,12 @@ import org.springframework.util.Assert;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * <p>My Concurrent Session Control Authentication Strategy.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class MyConcurrentSessionControlAuthenticationStrategy extends ConcurrentSessionControlAuthenticationStrategy {
 
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
@@ -38,12 +44,24 @@ public class MyConcurrentSessionControlAuthenticationStrategy extends Concurrent
     private boolean exceptionIfMaximumExceeded = false;
     private int maximumSessions = 1;
 
+    /**
+     * Constructs a new my concurrent session control authentication strategy instance.
+     *
+     * @param sessionRegistry the session registry
+     */
     public MyConcurrentSessionControlAuthenticationStrategy(SessionRegistry sessionRegistry) {
         super(sessionRegistry);
         Assert.notNull(sessionRegistry, "The sessionRegistry cannot be null");
         this.sessionRegistry = sessionRegistry;
     }
 
+    /**
+     * on Authentication.
+     *
+     * @param authentication the authentication
+     * @param request the request
+     * @param response the response
+     */
     public void onAuthentication(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         List<SessionInformation> sessions = this.sessionRegistry.getAllSessions(authentication.getPrincipal(), false);
         int sessionCount = sessions.size();
@@ -69,10 +87,24 @@ public class MyConcurrentSessionControlAuthenticationStrategy extends Concurrent
         }
     }
 
+    /**
+     * get Maximum Sessions For This User.
+     *
+     * @param authentication the authentication
+     * @return the result
+     */
     protected int getMaximumSessionsForThisUser(Authentication authentication) {
         return this.maximumSessions;
     }
 
+    /**
+     * allowable Sessions Exceeded.
+     *
+     * @param sessions the sessions
+     * @param allowableSessions the allowable sessions
+     * @param registry the registry
+     * @throws SessionAuthenticationException if an error occurs
+     */
     protected void allowableSessionsExceeded(List<SessionInformation> sessions, int allowableSessions, SessionRegistry registry) throws SessionAuthenticationException {
         if(!this.exceptionIfMaximumExceeded && sessions != null) {
             SessionInformation leastRecentlyUsed = null;
@@ -97,15 +129,30 @@ public class MyConcurrentSessionControlAuthenticationStrategy extends Concurrent
         }
     }
 
+    /**
+     * Sets the exception if maximum exceeded.
+     *
+     * @param exceptionIfMaximumExceeded the exception if maximum exceeded
+     */
     public void setExceptionIfMaximumExceeded(boolean exceptionIfMaximumExceeded) {
         this.exceptionIfMaximumExceeded = exceptionIfMaximumExceeded;
     }
 
+    /**
+     * Sets the maximum sessions.
+     *
+     * @param maximumSessions the maximum sessions
+     */
     public void setMaximumSessions(int maximumSessions) {
         Assert.isTrue(maximumSessions != 0, "MaximumLogins must be either -1 to allow unlimited logins, or a positive integer to specify a maximum");
         this.maximumSessions = maximumSessions;
     }
 
+    /**
+     * Sets the message source.
+     *
+     * @param messageSource the message source
+     */
     public void setMessageSource(MessageSource messageSource) {
         Assert.notNull(messageSource, "messageSource cannot be null");
         this.messages = new MessageSourceAccessor(messageSource);

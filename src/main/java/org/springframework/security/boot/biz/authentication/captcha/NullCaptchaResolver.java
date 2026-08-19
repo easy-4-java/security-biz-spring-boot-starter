@@ -23,14 +23,30 @@ import java.util.Date;
 /**
  * Null Captcha Resolver
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class NullCaptchaResolver implements CaptchaResolver {
 
+	/**
+	 * Determines whether valid captcha.
+	 *
+	 * @param request the request
+	 * @param capText the cap text
+	 * @return the result
+	 */
 	@Override
 	public boolean validCaptcha(HttpServletRequest request, String capText) {
 		return true;
 	}
 
+	/**
+	 * set Captcha.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param capText the cap text
+	 * @param capDate the cap date
+	 */
 	@Override
 	public void setCaptcha(HttpServletRequest request, HttpServletResponse response, String capText, Date capDate) {
 

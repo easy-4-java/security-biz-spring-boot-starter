@@ -21,6 +21,7 @@ import java.io.IOException;
 /**
  * PostOnly Authentication Processing Filter
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public abstract class PostOnlyAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
 
@@ -55,6 +56,13 @@ public abstract class PostOnlyAuthenticationProcessingFilter extends Authenticat
 	// ~ Methods
 	// ========================================================================================================
 
+	/**
+	 * attempt Authentication.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @return the result
+	 */
 	@Override
 	public final Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
@@ -90,6 +98,11 @@ public abstract class PostOnlyAuthenticationProcessingFilter extends Authenticat
 		this.postOnly = postOnly;
 	}
 	
+	/**
+	 * Returns the post only.
+	 *
+	 * @return the post only
+	 */
 	public boolean isPostOnly() {
 		return postOnly;
 	}

@@ -22,6 +22,7 @@ import lombok.ToString;
 /**
  * Header Cache Control Properties
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 @Getter
 @Setter

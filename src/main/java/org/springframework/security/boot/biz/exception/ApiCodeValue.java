@@ -1,5 +1,11 @@
 package org.springframework.security.boot.biz.exception;
 
+/**
+ * <p>Interface for API Code Value.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public interface ApiCodeValue {
 
 	// API Code 200（成功）

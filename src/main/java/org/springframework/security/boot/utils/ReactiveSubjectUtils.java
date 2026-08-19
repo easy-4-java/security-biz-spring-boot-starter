@@ -8,35 +8,69 @@ import reactor.core.publisher.Mono;
 /**
  * Reactive Subject Utils
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class ReactiveSubjectUtils {
 
+	/**
+	 * Returns the security context.
+	 *
+	 * @return the security context
+	 */
 	public static Mono<SecurityContext> getSecurityContext(){
 		return ReactiveSecurityContextHolder.getContext();
 	}
 
+	/**
+	 * Returns the authentication.
+	 *
+	 * @return the authentication
+	 */
 	public static Mono<Authentication> getAuthentication(){
 		return getSecurityContext()
 				.switchIfEmpty(Mono.error(new IllegalStateException("ReactiveSecurityContext is empty")))
                 .map(SecurityContext::getAuthentication);
 	}
 
+	/**
+	 * get Principal.
+	 *
+	 * @param authentication the authentication
+	 * @param clazz the clazz
+	 * @return the result
+	 */
 	public static <T> Mono<T> getPrincipal(Authentication authentication, Class<T> clazz){
 		ReactiveSecurityContextHolder.withAuthentication(authentication);
 		return getPrincipal(clazz);
 	}
 
+	/**
+	 * get Principal.
+	 *
+	 * @param clazz the clazz
+	 * @return the result
+	 */
 	public static <T> Mono<T> getPrincipal(Class<T> clazz){
 		return getAuthentication()
 				.switchIfEmpty(Mono.error(new IllegalStateException("Authentication is empty")))
 				.map(Authentication::getPrincipal).cast(clazz);
 	}
 
+	/**
+	 * Returns the principal.
+	 *
+	 * @return the principal
+	 */
 	public static Mono<Object> getPrincipal(){
 		return getAuthentication()
 				.map(Authentication::getPrincipal);
 	}
 
+	/**
+	 * Returns the authenticated.
+	 *
+	 * @return the authenticated
+	 */
 	public static boolean isAuthenticated(){
 		return getAuthentication()
 				.map(Authentication::isAuthenticated)

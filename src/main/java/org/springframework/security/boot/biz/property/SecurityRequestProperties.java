@@ -18,6 +18,7 @@ package org.springframework.security.boot.biz.property;
 /**
  * Security Request Properties
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class SecurityRequestProperties {
 

@@ -19,6 +19,7 @@ import java.util.List;
  * Post认证请求成功后的处理实现
  * 
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
@@ -27,16 +28,36 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 	private List<MatchedAuthenticationSuccessHandler> successHandlers;
 	private boolean stateless = false;
 	
+	/**
+	 * Constructs a new post request authentication success handler instance.
+	 *
+	 * @param successHandlers the success handlers
+	 */
 	public PostRequestAuthenticationSuccessHandler(List<MatchedAuthenticationSuccessHandler> successHandlers) {
 		this.setSuccessHandlers(successHandlers);
 	}
 
+	/**
+	 * Constructs a new post request authentication success handler instance.
+	 *
+	 * @param authenticationListeners the authentication listeners
+	 * @param successHandlers the success handlers
+	 */
 	public PostRequestAuthenticationSuccessHandler(List<AuthenticationListener> authenticationListeners,
 			List<MatchedAuthenticationSuccessHandler> successHandlers) {
 		this.setAuthenticationListeners(authenticationListeners);
 		this.setSuccessHandlers(successHandlers);
 	}
 
+	/**
+	 * on Authentication Success.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param authentication the authentication
+	 * @throws IOException if an error occurs
+	 * @throws ServletException if an error occurs
+	 */
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
@@ -84,34 +105,74 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 
 	}
 
+	/**
+	 * Returns the authentication listeners.
+	 *
+	 * @return the authentication listeners
+	 */
 	public List<AuthenticationListener> getAuthenticationListeners() {
 		return authenticationListeners;
 	}
 
+	/**
+	 * Sets the authentication listeners.
+	 *
+	 * @param authenticationListeners the authentication listeners
+	 */
 	public void setAuthenticationListeners(List<AuthenticationListener> authenticationListeners) {
 		this.authenticationListeners = authenticationListeners;
 	}
 
+	/**
+	 * Returns the messages.
+	 *
+	 * @return the messages
+	 */
 	public MessageSourceAccessor getMessages() {
 		return messages;
 	}
 
+	/**
+	 * Returns the success handlers.
+	 *
+	 * @return the success handlers
+	 */
 	public List<MatchedAuthenticationSuccessHandler> getSuccessHandlers() {
 		return successHandlers;
 	}
 
+	/**
+	 * Sets the messages.
+	 *
+	 * @param messages the messages
+	 */
 	public void setMessages(MessageSourceAccessor messages) {
 		this.messages = messages;
 	}
 
+	/**
+	 * Sets the success handlers.
+	 *
+	 * @param successHandlers the success handlers
+	 */
 	public void setSuccessHandlers(List<MatchedAuthenticationSuccessHandler> successHandlers) {
 		this.successHandlers = successHandlers;
 	}
 
+	/**
+	 * Returns the stateless.
+	 *
+	 * @return the stateless
+	 */
 	public boolean isStateless() {
 		return stateless;
 	}
 
+	/**
+	 * Sets the stateless.
+	 *
+	 * @param stateless the stateless
+	 */
 	public void setStateless(boolean stateless) {
 		this.stateless = stateless;
 	}

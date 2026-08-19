@@ -26,6 +26,7 @@ import org.springframework.util.Assert;
 /**
  * Security Authc Properties
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 @Data
 public class SecurityAuthcProperties {

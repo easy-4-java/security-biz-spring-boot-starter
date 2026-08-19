@@ -1,5 +1,11 @@
 package org.springframework.security.boot.biz.exception;
 
+/**
+ * <p>Constants for Auth.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class AuthConstants {
 
 	public static final String UID = "uid";

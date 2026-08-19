@@ -28,9 +28,16 @@ import java.io.IOException;
 /**
  * TODO
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class JsonInvalidSessionStrategy implements InvalidSessionStrategy {
 
+	/**
+	 * on Invalid Session Detected.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 */
 	@Override
 	public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {

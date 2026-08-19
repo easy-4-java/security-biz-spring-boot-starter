@@ -24,6 +24,7 @@ import java.util.Map;
 /**
  * Abstract JSON Web Token (JWT) Payload Repository
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public interface JwtPayloadRepository {
 

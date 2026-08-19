@@ -106,6 +106,13 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 	// ~ Methods
 	// ========================================================================================================
 
+	/**
+	 * attempt Authentication.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @return the result
+	 */
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
@@ -147,100 +154,218 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 			HttpServletResponse response) throws AuthenticationException, IOException,
 			ServletException;
 
+	/**
+	 * set Details.
+	 *
+	 * @param request the request
+	 * @param authRequest the auth request
+	 */
 	protected void setDetails(HttpServletRequest request, AbstractAuthenticationToken authRequest) {
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 	}
 	
+	/**
+	 * obtain Longitude.
+	 *
+	 * @param request the request
+	 * @return the result
+	 */
 	protected double obtainLongitude(HttpServletRequest request) {
 		return Double.parseDouble(StringUtils.defaultIfBlank(request.getHeader(getLongitudeHeaderName()), DEFAULT_LONGITUDE_LATITUDE));
 	}
 	
+	/**
+	 * obtain Latitude.
+	 *
+	 * @param request the request
+	 * @return the result
+	 */
 	protected double obtainLatitude(HttpServletRequest request) {
 		return Double.parseDouble(StringUtils.defaultIfBlank(request.getHeader(getLatitudeHeaderName()), DEFAULT_LONGITUDE_LATITUDE));
 	}
 	
+	/**
+	 * obtain Uid.
+	 *
+	 * @param request the request
+	 * @return the result
+	 */
 	protected String obtainUid(HttpServletRequest request) {
 		String uid = request.getHeader(getUidHeaderName());
 		logger.debug(format, getUidHeaderName(), uid);
 		return uid;
 	}
 	
+	/**
+	 * obtain Sign.
+	 *
+	 * @param request the request
+	 * @return the result
+	 */
 	protected String obtainSign(HttpServletRequest request) {
 		String sign = request.getHeader(getSignHeaderName());
 		logger.debug(format, getSignHeaderName(), sign);
 		return sign;
 	}
 	
+	/**
+	 * obtain App ID.
+	 *
+	 * @param request the request
+	 * @return the result
+	 */
 	protected String obtainAppId(HttpServletRequest request) {
 		String appId = request.getHeader(getAppIdHeaderName());
 		logger.debug(format,  getAppIdHeaderName(), appId);
 		return appId;
 	}
 	
+	/**
+	 * obtain App Channel.
+	 *
+	 * @param request the request
+	 * @return the result
+	 */
 	protected String obtainAppChannel(HttpServletRequest request) {
 		String appChannel = request.getHeader(getAppChannelHeaderName());
 		logger.debug(format,  getAppChannelHeaderName(), appChannel);
 		return appChannel;
 	}
 	
+	/**
+	 * obtain App Version.
+	 *
+	 * @param request the request
+	 * @return the result
+	 */
 	protected String obtainAppVersion(HttpServletRequest request) {
 		String appVersion = request.getHeader(getAppVersionHeaderName());
 		logger.debug(format,  getAppVersionHeaderName(), appVersion);
 		return appVersion;
 	}
 	
+	/**
+	 * Returns the uid header name.
+	 *
+	 * @return the uid header name
+	 */
 	public String getUidHeaderName() {
 		return uidHeaderName;
 	}
 
+	/**
+	 * Sets the uid header name.
+	 *
+	 * @param uidHeaderName the uid header name
+	 */
 	public void setUidHeaderName(String uidHeaderName) {
 		this.uidHeaderName = uidHeaderName;
 	}
 	
+	/**
+	 * Returns the sign header name.
+	 *
+	 * @return the sign header name
+	 */
 	public String getSignHeaderName() {
 		return signHeaderName;
 	}
 
+	/**
+	 * Sets the sign header name.
+	 *
+	 * @param signHeaderName the sign header name
+	 */
 	public void setSignHeaderName(String signHeaderName) {
 		this.signHeaderName = signHeaderName;
 	}
 
+	/**
+	 * Returns the longitude header name.
+	 *
+	 * @return the longitude header name
+	 */
 	public String getLongitudeHeaderName() {
 		return longitudeHeaderName;
 	}
 
+	/**
+	 * Sets the longitude header name.
+	 *
+	 * @param longitudeHeaderName the longitude header name
+	 */
 	public void setLongitudeHeaderName(String longitudeHeaderName) {
 		this.longitudeHeaderName = longitudeHeaderName;
 	}
 
+	/**
+	 * Returns the latitude header name.
+	 *
+	 * @return the latitude header name
+	 */
 	public String getLatitudeHeaderName() {
 		return latitudeHeaderName;
 	}
 
+	/**
+	 * Sets the latitude header name.
+	 *
+	 * @param latitudeHeaderName the latitude header name
+	 */
 	public void setLatitudeHeaderName(String latitudeHeaderName) {
 		this.latitudeHeaderName = latitudeHeaderName;
 	}
 
+	/**
+	 * Returns the app id header name.
+	 *
+	 * @return the app id header name
+	 */
 	public String getAppIdHeaderName() {
 		return appIdHeaderName;
 	}
 
+	/**
+	 * Sets the app id header name.
+	 *
+	 * @param appIdHeaderName the app id header name
+	 */
 	public void setAppIdHeaderName(String appIdHeaderName) {
 		this.appIdHeaderName = appIdHeaderName;
 	}
 
+	/**
+	 * Returns the app channel header name.
+	 *
+	 * @return the app channel header name
+	 */
 	public String getAppChannelHeaderName() {
 		return appChannelHeaderName;
 	}
 
+	/**
+	 * Sets the app channel header name.
+	 *
+	 * @param appChannelHeaderName the app channel header name
+	 */
 	public void setAppChannelHeaderName(String appChannelHeaderName) {
 		this.appChannelHeaderName = appChannelHeaderName;
 	}
 
+	/**
+	 * Returns the app version header name.
+	 *
+	 * @return the app version header name
+	 */
 	public String getAppVersionHeaderName() {
 		return appVersionHeaderName;
 	}
 
+	/**
+	 * Sets the app version header name.
+	 *
+	 * @param appVersionHeaderName the app version header name
+	 */
 	public void setAppVersionHeaderName(String appVersionHeaderName) {
 		this.appVersionHeaderName = appVersionHeaderName;
 	}

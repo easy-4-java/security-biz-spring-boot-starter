@@ -28,6 +28,12 @@ import org.springframework.util.Assert;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+/**
+ * <p>My Session Registry Impl.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 @Slf4j
 @SuppressWarnings("unchecked")
 public class MySessionRegistryImpl implements SessionRegistry, ApplicationListener<SessionDestroyedEvent> {
@@ -40,13 +46,29 @@ public class MySessionRegistryImpl implements SessionRegistry, ApplicationListen
 //    private final ConcurrentMap<Object, Set<String>> principals = new ConcurrentHashMap();
 //    private final Map<String, SessionInformation> sessionIds = new ConcurrentHashMap();
 
+    /**
+     * Constructs a new my session registry impl instance.
+     *
+     */
     public MySessionRegistryImpl() {
     }
 
+    /**
+     * Returns the all principals.
+     *
+     * @return the all principals
+     */
     public List<Object> getAllPrincipals() {
         return new ArrayList<>(this.getPrincipalsKeySet());
     }
 
+    /**
+     * get All Sessions.
+     *
+     * @param principal the principal
+     * @param includeExpiredSessions the include expired sessions
+     * @return the result
+     */
     public List<SessionInformation> getAllSessions(Object principal, boolean includeExpiredSessions) {
         Set<String> sessionsUsedByPrincipal =  this.getPrincipals(((UserDetails)principal).getUsername());
         if (sessionsUsedByPrincipal == null) {
@@ -70,16 +92,32 @@ public class MySessionRegistryImpl implements SessionRegistry, ApplicationListen
         }
     }
 
+    /**
+     * get Session Information.
+     *
+     * @param sessionId the session id
+     * @return the result
+     */
     public SessionInformation getSessionInformation(String sessionId) {
         Assert.hasText(sessionId, "SessionId required as per interface contract");
         return (SessionInformation) this.getSessionInfo(sessionId);
     }
 
+    /**
+     * on Application Event.
+     *
+     * @param event the event
+     */
     public void onApplicationEvent(SessionDestroyedEvent event) {
         String sessionId = event.getId();
         this.removeSessionInformation(sessionId);
     }
 
+    /**
+     * refresh Last Request.
+     *
+     * @param sessionId the session id
+     */
     public void refreshLastRequest(String sessionId) {
         Assert.hasText(sessionId, "SessionId required as per interface contract");
         SessionInformation info = this.getSessionInformation(sessionId);
@@ -89,6 +127,12 @@ public class MySessionRegistryImpl implements SessionRegistry, ApplicationListen
 
     }
 
+    /**
+     * register New Session.
+     *
+     * @param sessionId the session id
+     * @param principal the principal
+     */
     public void registerNewSession(String sessionId, Object principal) {
         Assert.hasText(sessionId, "SessionId required as per interface contract");
         Assert.notNull(principal, "Principal required as per interface contract");
@@ -120,6 +164,11 @@ public class MySessionRegistryImpl implements SessionRegistry, ApplicationListen
 
     }
 
+    /**
+     * remove Session Information.
+     *
+     * @param sessionId the session id
+     */
     public void removeSessionInformation(String sessionId) {
         Assert.hasText(sessionId, "SessionId required as per interface contract");
         SessionInformation info = this.getSessionInformation(sessionId);
@@ -153,21 +202,45 @@ public class MySessionRegistryImpl implements SessionRegistry, ApplicationListen
     }
 
 
+    /**
+     * add Session Info.
+     *
+     * @param sessionId the session id
+     * @param sessionInformation the session information
+     */
     public void addSessionInfo(final String sessionId, final SessionInformation sessionInformation) {
         BoundHashOperations<String, String, SessionInformation> hashOperations = redisTemplate.boundHashOps(SESSIONIDS);
         hashOperations.put(sessionId, sessionInformation);
     }
 
+    /**
+     * get Session Info.
+     *
+     * @param sessionId the session id
+     * @return the result
+     */
     public SessionInformation getSessionInfo(final String sessionId) {
         BoundHashOperations<String, String, SessionInformation> hashOperations = redisTemplate.boundHashOps(SESSIONIDS);
         return hashOperations.get(sessionId);
     }
 
+    /**
+     * remove Session Info.
+     *
+     * @param sessionId the session id
+     */
     public void removeSessionInfo(final String sessionId) {
         BoundHashOperations<String, String, SessionInformation> hashOperations = redisTemplate.boundHashOps(SESSIONIDS);
         hashOperations.delete(sessionId);
     }
 
+    /**
+     * put If Absent Principals.
+     *
+     * @param key the key
+     * @param set the set
+     * @return the result
+     */
     public Set<String> putIfAbsentPrincipals(final String key, final Set<String> set) {
         BoundHashOperations<String, String, Set<String>> hashOperations = redisTemplate.boundHashOps(PRINCIPALS);
         hashOperations.putIfAbsent(key, set);
@@ -175,21 +248,43 @@ public class MySessionRegistryImpl implements SessionRegistry, ApplicationListen
     }
 
    
+	/**
+	 * put Principals.
+	 *
+	 * @param key the key
+	 * @param set the set
+	 */
 	public void putPrincipals(final String key, final Set<String> set) {
         BoundHashOperations<String, String, Set<String>> hashOperations = redisTemplate.boundHashOps(PRINCIPALS);
         hashOperations.put(key,set);
     }
 
+    /**
+     * get Principals.
+     *
+     * @param key the key
+     * @return the result
+     */
     public Set<String> getPrincipals(final String key) {
         BoundHashOperations<String, String, Set<String>> hashOperations = redisTemplate.boundHashOps(PRINCIPALS);
         return hashOperations.get(key);
     }
 
+    /**
+     * Returns the principals key set.
+     *
+     * @return the principals key set
+     */
     public Set<String> getPrincipalsKeySet() {
         BoundHashOperations<String, String, Set<String>> hashOperations = redisTemplate.boundHashOps(PRINCIPALS);
         return hashOperations.keys();
     }
 
+    /**
+     * remove Principal.
+     *
+     * @param key the key
+     */
     public void removePrincipal(final String key) {
         BoundHashOperations<String, String, Set<String>> hashOperations = redisTemplate.boundHashOps(PRINCIPALS);
         hashOperations.delete(key);

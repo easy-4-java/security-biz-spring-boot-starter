@@ -3,6 +3,7 @@ package org.springframework.security.boot.biz.exception;
 /**
  * Authentication Token Invalid Exception
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 @SuppressWarnings("serial")
 public class AuthenticationTokenInvalidException extends AuthenticationExceptionAdapter {

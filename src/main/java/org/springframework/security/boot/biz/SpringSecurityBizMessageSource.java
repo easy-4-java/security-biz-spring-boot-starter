@@ -21,12 +21,17 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 /**
  * TODO
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class SpringSecurityBizMessageSource extends ResourceBundleMessageSource {
 	
 	// ~ Constructors
 	// ===================================================================================================
 
+	/**
+	 * Constructs a new spring security biz message source instance.
+	 *
+	 */
 	public SpringSecurityBizMessageSource() {
 		setBasename("org.springframework.security.boot.biz.messages");
 	}
@@ -34,6 +39,11 @@ public class SpringSecurityBizMessageSource extends ResourceBundleMessageSource 
 	// ~ Methods
 	// ========================================================================================================
 
+	/**
+	 * Returns the accessor.
+	 *
+	 * @return the accessor
+	 */
 	public static MessageSourceAccessor getAccessor() {
 		return new MessageSourceAccessor(new SpringSecurityBizMessageSource());
 	}

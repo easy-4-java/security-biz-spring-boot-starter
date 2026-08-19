@@ -25,17 +25,34 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 /**
  * Netease Url Authentication Success Handler
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class NeteaseUrlAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    /**
+     * Constructs a new netease url authentication success handler instance.
+     *
+     */
     public NeteaseUrlAuthenticationSuccessHandler() {
         super();
     }
 
+    /**
+     * Constructs a new netease url authentication success handler instance.
+     *
+     * @param defaultTargetUrl the default target url
+     */
     public NeteaseUrlAuthenticationSuccessHandler(String defaultTargetUrl) {
         super(defaultTargetUrl);
     }
 
+    /**
+     * determine Target URL.
+     *
+     * @param request the request
+     * @param response the response
+     * @return the result
+     */
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response) {
         if (isAlwaysUseDefaultTargetUrl()) {

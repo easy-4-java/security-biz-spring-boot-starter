@@ -26,15 +26,35 @@ import java.io.IOException;
  * Http Params Filter
  * http://blog.csdn.net/jaune161/article/details/78060780
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class HttpParamsFilter implements Filter {
+    /**
+     * init.
+     *
+     * @param filterConfig the filter config
+     * @throws ServletException if an error occurs
+     */
     public static String REQUESTED_URL = "CasRequestedUrl";
 
+    /**
+     * init.
+     *
+     * @param filterConfig the filter config
+     * @throws ServletException if an error occurs
+     */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
     }
 
+    /**
+     * do Filter.
+     *
+     * @param servletRequest the servlet request
+     * @param servletResponse the servlet response
+     * @param chain the chain
+     */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
             throws IOException, ServletException {
@@ -49,6 +69,10 @@ public class HttpParamsFilter implements Filter {
         chain.doFilter(request, response);
     }
 
+    /**
+     * destroy.
+     *
+     */
     @Override
     public void destroy() {
 

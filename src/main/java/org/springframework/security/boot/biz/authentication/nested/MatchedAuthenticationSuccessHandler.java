@@ -26,6 +26,7 @@ import java.io.IOException;
 /**
  * TODO
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public interface MatchedAuthenticationSuccessHandler {
 
