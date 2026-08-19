@@ -215,6 +215,13 @@
             <artifactId>spring-enhance</artifactId>
         </dependency>
 
+        <!-- Source: https://github.com/easy-4-java/spring-security-extension — easy4j spring-security-extension -->
+        <dependency>
+            <groupId>io.github.easy4j</groupId>
+            <artifactId>spring-security-extension</artifactId>
+            <version>${spring-security-extension.version}</version>
+        </dependency>
+
         <!-- Source: https://github.com/easy-4-java/jwt-issuer-api — easy4j jwt-issuer-api -->
         <dependency>
             <groupId>io.github.easy4j</groupId>

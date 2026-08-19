@@ -31,8 +31,8 @@ import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperti
 import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.property.header.*;
-import org.springframework.security.boot.utils.StringUtils;
-import org.springframework.security.boot.utils.WebSecurityUtils;
+import org.springframework.security.boot.biz.utils.StringUtils;
+import org.springframework.security.boot.biz.utils.WebSecurityUtils;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
